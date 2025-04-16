@@ -209,11 +209,7 @@ class Index implements ActionInterface
     {
         $quote = $this->checkoutSession->getQuote();
 
-        if ($quote && $quote->getId() && $quote->getIsActive())
-        {
-            $quote->setIsActive(false);
-            $this->quoteHelper->saveQuote($quote);
-        }
+        $this->quoteHelper->deactivateQuote($quote);
 
         if (!$this->checkoutSession->getLastRealOrderId() && $order)
             $this->checkoutSession->setLastRealOrderId($order->getIncrementId());

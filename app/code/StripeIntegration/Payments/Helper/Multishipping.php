@@ -123,7 +123,8 @@ class Multishipping
             $this->state->setActiveStep(State::STEP_SUCCESS);
             $this->checkoutSession->clearQuote();
             $this->checkoutSession->setDisplaySuccess(true);
-            $checkout->deactivateQuote($checkout->getQuote());
+            $this->checkoutSession->setLastQuoteId($checkout->getQuote()->getId());
+            $this->quoteHelper->deactivateQuote($checkout->getQuote());
             return $this->helper->getUrl('multishipping/checkout/success');
         }
         else

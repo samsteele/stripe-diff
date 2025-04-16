@@ -9,11 +9,13 @@ namespace StripeIntegration\Payments\Test\Integration\Frontend\CheckoutPage\Redi
  */
 class PlaceOrderTest extends \PHPUnit\Framework\TestCase
 {
+    private $objectManager;
     private $quote;
     private $tests;
 
     public function setUp(): void
     {
+        $this->objectManager = \Magento\TestFramework\ObjectManager::getInstance();
         $this->tests = new \StripeIntegration\Payments\Test\Integration\Helper\Tests($this);
         $this->quote = new \StripeIntegration\Payments\Test\Integration\Helper\Quote();
     }
@@ -104,5 +106,12 @@ class PlaceOrderTest extends \PHPUnit\Framework\TestCase
             $this->assertEquals(13.46, $order->getGrandTotal());
 
         $this->assertEquals(1, $order->getInvoiceCollection()->count());
+
+        // Switch to the admin area
+        $this->objectManager->get(\Magento\Framework\App\State::class)->setAreaCode('adminhtml');
+        $order = $this->tests->refreshOrder($order);
+
+        // Create the payment info block for $order
+        $this->assertNotEmpty($this->tests->renderPaymentInfoBlock(\StripeIntegration\Payments\Block\PaymentInfo\Checkout::class, $order));
     }
 }

@@ -48,7 +48,6 @@ class PlaceOrderTest extends \PHPUnit\Framework\TestCase
         $paymentMethod = $paymentInfoBlock->getPaymentMethod();
         $formattedAmount = $paymentInfoBlock->getFormattedAmount();
         $paymentStatus = $paymentInfoBlock->getPaymentStatus();
-        $isStripeMethod = $paymentInfoBlock->isStripeMethod();
         $paymentIntent = $paymentInfoBlock->getPaymentIntent();
         $mode = $paymentInfoBlock->getMode();
         $riskElementClass = $paymentInfoBlock->getRiskElementClass();
@@ -59,7 +58,6 @@ class PlaceOrderTest extends \PHPUnit\Framework\TestCase
         $this->assertStringStartsWith("pm_", $paymentMethod->id);
         $this->assertEquals("$53.30", $formattedAmount);
         $this->assertEquals("succeeded", $paymentStatus);
-        $this->assertTrue($isStripeMethod);
         $this->assertStringStartsWith("pi_", $paymentIntent->id);
         $this->assertEquals("test/", $mode);
         $this->assertEquals("normal", $riskElementClass);

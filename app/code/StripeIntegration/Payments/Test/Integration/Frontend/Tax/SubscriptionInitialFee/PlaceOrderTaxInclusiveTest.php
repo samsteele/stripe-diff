@@ -9,12 +9,13 @@ use StripeIntegration\Tax\Test\Integration\Helper\Calculator;
  * @magentoAppIsolation enabled
  * @magentoDbIsolation enabled
  */
-class PlaceOrderTaxInclusiveTest extends BaseSubscription
+class PlaceOrderTaxInclusiveTest extends \PHPUnit\Framework\TestCase
 {
     private $quote;
     private $tests;
     private $orderHelper;
     private $calculator;
+    private $subscriptionsHelper;
 
     public function setUp(): void
     {
@@ -22,6 +23,7 @@ class PlaceOrderTaxInclusiveTest extends BaseSubscription
         $this->quote = new \StripeIntegration\Payments\Test\Integration\Helper\Quote();
         $this->orderHelper = $this->tests->objectManager->get(\StripeIntegration\Payments\Helper\Order::class);
         $this->calculator = new Calculator('Romania');
+        $this->subscriptionsHelper = new \StripeIntegration\Payments\Test\Integration\Helper\Subscriptions($this);
     }
 
     /**
@@ -56,7 +58,7 @@ class PlaceOrderTaxInclusiveTest extends BaseSubscription
             'tax_percent' => $this->calculator->getTaxRate(),
             'mode' => 'inclusive'
         ];
-        $this->compareSubscriptionDetails($order, $subscriptionDetails);
+        $this->subscriptionsHelper->compareSubscriptionDetails($order, $subscriptionDetails);
 
         $eventHelper = $this->tests->event();
         $subscriptionId = $order->getPayment()->getAdditionalInformation("subscription_id");

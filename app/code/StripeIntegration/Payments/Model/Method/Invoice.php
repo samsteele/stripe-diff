@@ -46,8 +46,8 @@ class Invoice extends \Magento\Payment\Model\Method\Adapter
         \StripeIntegration\Payments\Model\Stripe\PaymentIntentFactory $stripePaymentIntentFactory,
         \StripeIntegration\Payments\Model\InvoiceFactory $orderInvoiceFactory,
         \Magento\Framework\App\CacheInterface $cache,
-        \Magento\Payment\Gateway\Command\CommandPoolInterface $commandPool = null,
-        \Magento\Payment\Gateway\Validator\ValidatorPoolInterface $validatorPool = null
+        ?\Magento\Payment\Gateway\Command\CommandPoolInterface $commandPool = null,
+        ?\Magento\Payment\Gateway\Validator\ValidatorPoolInterface $validatorPool = null
     ) {
         $this->config = $config;
         $this->helper = $helper;
@@ -76,7 +76,7 @@ class Invoice extends \Magento\Payment\Model\Method\Adapter
         );
     }
 
-    public function isAvailable(\Magento\Quote\Api\Data\CartInterface $quote = null)
+    public function isAvailable(?\Magento\Quote\Api\Data\CartInterface $quote = null)
     {
         if (!$this->config->isEnabled())
             return false;

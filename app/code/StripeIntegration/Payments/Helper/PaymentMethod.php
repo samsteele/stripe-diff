@@ -30,7 +30,6 @@ class PaymentMethod
     private const CAN_ONLY_BE_SAVED_OFF_SESSION = [
         'bancontact',
         'ideal',
-        'sofort',
         'link',
         'revolut_pay',
         'paypal'
@@ -99,8 +98,7 @@ class PaymentMethod
         'konbini',
         'oxxo',
         'p24',
-        'paynow',
-        'sofort'
+        'paynow'
     ];
 
     private $dataHelper;
@@ -357,7 +355,7 @@ class PaymentMethod
                 'icon' => $this->getViewFileUrl("StripeIntegration_Payments::img/methods/sepa_credit.svg")
             ],
             'sofort' => [
-                'name' => "SOFORT",
+                'name' => "Klarna",
                 'icon' => $this->getViewFileUrl("StripeIntegration_Payments::img/methods/klarna.svg")
             ],
             'wechat_pay' => [

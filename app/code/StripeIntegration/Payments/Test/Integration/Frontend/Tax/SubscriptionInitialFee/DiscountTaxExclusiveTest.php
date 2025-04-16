@@ -9,12 +9,13 @@ use StripeIntegration\Tax\Test\Integration\Helper\Calculator;
  * @magentoAppIsolation enabled
  * @magentoDbIsolation enabled
  */
-class DiscountTaxExclusiveTest extends BaseSubscription
+class DiscountTaxExclusiveTest extends \PHPUnit\Framework\TestCase
 {
     private $quote;
     private $tests;
     private $orderHelper;
     private $calculator;
+    private $subscriptionsHelper;
 
     public function setUp(): void
     {
@@ -22,6 +23,7 @@ class DiscountTaxExclusiveTest extends BaseSubscription
         $this->quote = new \StripeIntegration\Payments\Test\Integration\Helper\Quote();
         $this->orderHelper = $this->tests->objectManager->get(\StripeIntegration\Payments\Helper\Order::class);
         $this->calculator = new Calculator('Romania');
+        $this->subscriptionsHelper = new \StripeIntegration\Payments\Test\Integration\Helper\Subscriptions($this);
     }
 
     /**
@@ -64,7 +66,7 @@ class DiscountTaxExclusiveTest extends BaseSubscription
             'tax_percent' => $this->calculator->getTaxRate(),
             'mode' => 'exclusive'
         ];
-        $this->compareSubscriptionDetails($order, $subscriptionDetails);
+        $this->subscriptionsHelper->compareSubscriptionDetails($order, $subscriptionDetails);
 
         $orderTotal = 2023; // 10 for item, 1 discount, 5 shipping, 3 initial fee, tax 19% for all: 17 * 1.19 = 20.23
         $subscriptionTotal = 1666; // $10 for the item, 1 discount, $5 for the shipping, $2.66 for tax

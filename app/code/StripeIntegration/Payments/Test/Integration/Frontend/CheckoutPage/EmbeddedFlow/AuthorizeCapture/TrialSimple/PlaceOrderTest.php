@@ -49,12 +49,12 @@ class PlaceOrderTest extends \PHPUnit\Framework\TestCase
         $paymentInfoBlock = $this->objectManager->create(\StripeIntegration\Payments\Block\PaymentInfo\Element::class);
         $paymentInfoBlock->setOrder($order);
         $paymentInfoBlock->setInfo($order->getPayment());
+        $paymentInfoBlock->toHtml();
 
         // Test the payment info block
         $paymentMethod = $paymentInfoBlock->getPaymentMethod();
         $formattedAmount = $paymentInfoBlock->getFormattedAmount();
         $paymentStatus = $paymentInfoBlock->getPaymentStatus();
-        $isStripeMethod = $paymentInfoBlock->isStripeMethod();
         $paymentIntent = $paymentInfoBlock->getPaymentIntent();
         $subscription = $paymentInfoBlock->getSubscription();
         $setupIntent = $paymentInfoBlock->getSetupIntent();
@@ -69,7 +69,6 @@ class PlaceOrderTest extends \PHPUnit\Framework\TestCase
         $this->assertStringStartsWith("pm_", $paymentMethod->id);
         $this->assertEmpty($formattedAmount);
         $this->assertEmpty($paymentStatus);
-        $this->assertTrue($isStripeMethod);
         $this->assertStringStartsWith("sub_", $subscription->id);
         $this->assertStringStartsWith("seti_", $setupIntent->id);
         $this->assertStringStartsWith("http", $subscriptionOrderUrl);
@@ -156,5 +155,12 @@ class PlaceOrderTest extends \PHPUnit\Framework\TestCase
                 ]
             ]
         ]);
+
+        // Switch to the admin area
+        $this->objectManager->get(\Magento\Framework\App\State::class)->setAreaCode('adminhtml');
+        $order = $this->tests->refreshOrder($order);
+
+        // Create the payment info block for $order
+        $this->assertNotEmpty($this->tests->renderPaymentInfoBlock(\StripeIntegration\Payments\Block\PaymentInfo\Element::class, $order));
     }
 }

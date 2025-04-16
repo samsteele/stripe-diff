@@ -113,10 +113,16 @@ class RevertItem extends Command
             foreach ($orderItem->getChildrenItems() as $child) {
                 $reference = $this->lineItemsHelper->getReferenceForInvoiceTax($child, $order, true);
                 $items = $this->lineItemsCollection->getItemsByReference($reference);
-                if (!$this->checkLineItems($items, $quantity)) {
+                $childProductsForOneParent = $child->getQtyInvoiced() / $orderItem->getQtyInvoiced();
+                if (!$this->checkLineItems($items, $quantity * $childProductsForOneParent)) {
                     return 1;
                 }
                 foreach ($items as $lineItem) {
+                    if ($childProductsForOneParent >= 1) {
+                        $lineItem->setQtyMultiplier($childProductsForOneParent);
+                    } else {
+                        $lineItem->setQtyMultiplier(1);
+                    }
                     if ($this->shippingItem &&
                         $lineItem->getTransactionId() == $this->shippingItem->getTransactionId() &&
                         !$shippingProcessedWithLineItem
@@ -136,7 +142,8 @@ class RevertItem extends Command
                 } else {
                     $reversal = $this->reversal->createCommandLineReversal($transaction['line_items'], $quantity, $order, $this->additionalFeeItems);
                 }
-                $quantity -= $transaction['line_items'][0]->getQtyRemaining();
+                $parentRemainingQuantity = $transaction['line_items'][0]->getQtyRemaining() / $transaction['line_items'][0]->getQtyMultiplier();
+                $quantity -= $parentRemainingQuantity;
                 $reversalIds[] = $reversal->getStripeTransactionId();
             }
 
@@ -154,7 +161,7 @@ class RevertItem extends Command
                     $reversal = $this->reversal->createCommandLineReversal($lineItem, $quantity, $order, $this->additionalFeeItems, $this->shippingItem, $shipping);
                     $shippingProcessedWithLineItem = true;
                 } else {
-                    $reversal = $this->reversal->createCommandLineReversal($lineItem, $quantity, $order, $this->additionalFeeItems, $shipping);
+                    $reversal = $this->reversal->createCommandLineReversal($lineItem, $quantity, $order, $this->additionalFeeItems);
                 }
                 $quantity -= $lineItem->getQtyRemaining();
                 $reversalIds[] = $reversal->getStripeTransactionId();
@@ -195,7 +202,7 @@ class RevertItem extends Command
                     return true;
                 }
             }
-            $this->output->writeln(__("The transactions have no available tax for reversal on them. The --shipping parameter value will be ignored."));
+            $this->output->writeln(__("The transactions have no available shipping tax for reversal on them. The --shipping parameter value will be ignored."));
         }
 
         return true;
@@ -253,13 +260,6 @@ class RevertItem extends Command
         }
 
         $qtyAvailableForReversal = $orderItem->getQtyInvoiced() - $orderItem->getQtyRefunded();
-
-        if ($qtyAvailableForReversal == 0) {
-            $this->output->writeln("<error>" . "Quantity specified order item has no reversible quantity." . "<error>");
-
-            return false;
-        }
-
         if ($qtyAvailableForReversal < $quantity) {
             $this->output->writeln("<error>" . "Quantity specified for the reversal is not available. Please specify a value less or equal to $qtyAvailableForReversal." . "<error>");
 

@@ -2,6 +2,8 @@
 
 namespace StripeIntegration\Tax\Model\StripeTransaction;
 
+use StripeIntegration\Tax\Helper\DateTime;
+
 class Request
 {
     public const CALCULATION_FIELD_NAME = 'calculation';
@@ -14,10 +16,18 @@ class Request
     private $metadata;
     private $expand;
 
+    private $dateTimeHelper;
+
+    public function __construct(
+        DateTime $dateTimeHelper
+    ) {
+        $this->dateTimeHelper = $dateTimeHelper;
+    }
+
     public function formData($invoice)
     {
         $this->calculation = $invoice->getStripeTaxCalculationId();
-        $this->reference = sprintf('Invoice # %s_%s', $invoice->getIncrementId(), time());
+        $this->reference = sprintf('Invoice # %s_%s', $invoice->getIncrementId(), $this->dateTimeHelper->getTimestampInMilliseconds());
         $this->metadata = [
             'payment_transaction_id' => $invoice->getOrder()->getPayment()->getLastTransId(),
             'order_id' => $invoice->getOrder()->getIncrementId()

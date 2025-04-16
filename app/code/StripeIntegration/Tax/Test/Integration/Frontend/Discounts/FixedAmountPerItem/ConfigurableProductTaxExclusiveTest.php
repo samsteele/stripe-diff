@@ -50,24 +50,24 @@ class ConfigurableProductTaxExclusiveTest extends \PHPUnit\Framework\TestCase
         $calculatedData = $this->calculator->calculateQuoteData(80, 1, 5, $taxBehaviour);
         $this->compare->compareQuoteData($this->quote->getQuote(), $calculatedData);
 
-        $quoteItem = $this->quote->getQuoteItem('simple-product-red');
+        $quoteItem = $this->quote->getQuoteItem('tax-simple-product-red');
         $quoteItemData = $this->calculator->calculateQuoteItemData(100, 80, 5, 1, $taxBehaviour);
         $this->compare->compareQuoteItemData($quoteItem, $quoteItemData);
 
         $order = $this->quote->placeOrder();
         $order = $this->orderHelper->refreshOrder($order);
         $this->compare->compareOrderData($order, $calculatedData);
-        $orderItem = $this->orderHelper->getOrderItem($order, 'simple-product-red');
+        $orderItem = $this->orderHelper->getOrderItem($order, 'tax-simple-product-red');
         $this->compare->compareOrderItemData($orderItem, $quoteItemData);
 
         \Magento\TestFramework\Helper\Bootstrap::getInstance()->loadArea('adminhtml');
-        $this->tests->invoiceOnline($order, ['simple-product-red' => 1]);
+        $this->tests->invoiceOnline($order, ['tax-simple-product-red' => 1]);
         $order = $this->orderHelper->refreshOrder($order);
         $invoicesCollection = $order->getInvoiceCollection();
         $this->assertEquals(1, $invoicesCollection->getSize());
         $invoice = $invoicesCollection->getFirstItem();
         $this->compare->compareInvoiceData($invoice, $calculatedData);
-        $invoiceItem = $this->invoiceHelper->getInvoiceItem($invoice, 'simple-product-red');
+        $invoiceItem = $this->invoiceHelper->getInvoiceItem($invoice, 'tax-simple-product-red');
         $this->compare->compareInvoiceItemData($invoiceItem, $quoteItemData);
 
         $this->assertEquals($order->getGrandTotal(), $order->getTotalInvoiced());

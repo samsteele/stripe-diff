@@ -83,9 +83,9 @@ class Config
         return $this->getConfigData("stripe_{$mode}_pk", $storeId);
     }
 
-    public function setConfigData($path, $value, $scope, $storeId)
+    public function setConfigData($path, $value, $scope = ScopeConfigInterface::SCOPE_TYPE_DEFAULT, $scopeId = 0)
     {
-        return $this->resourceConfig->saveConfig($path, $value, $scope, $storeId);
+        return $this->resourceConfig->saveConfig($path, $value, $scope, $scopeId);
     }
 
     public function decrypt($key)

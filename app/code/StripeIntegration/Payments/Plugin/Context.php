@@ -135,7 +135,7 @@ class Context
      * @throws NotFoundException
      */
     private function processInvalidStoreRequested(
-        NoSuchEntityException $previousException = null
+        ?NoSuchEntityException $previousException = null
     ) {
         $store = $this->storeManager->getStore();
         $this->updateContext($store);

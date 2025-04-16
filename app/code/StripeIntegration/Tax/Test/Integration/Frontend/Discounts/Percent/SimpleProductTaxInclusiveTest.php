@@ -50,24 +50,24 @@ class SimpleProductTaxInclusiveTest extends \PHPUnit\Framework\TestCase
         $calculatedData = $this->calculator->calculateData(90, 2, 5, $taxBehaviour);
 
         $this->compare->compareQuoteData($this->quote->getQuote(), $calculatedData);
-        $quoteItem = $this->quote->getQuoteItem('simple-product');
+        $quoteItem = $this->quote->getQuoteItem('tax-simple-product');
         $quoteItemData = $this->calculator->calculateQuoteItemData(100, 90, 10, 2, $taxBehaviour);
         $this->compare->compareQuoteItemData($quoteItem, $quoteItemData);
 
         $order = $this->quote->placeOrder();
         $order = $this->orderHelper->refreshOrder($order);
         $this->compare->compareOrderData($order, $calculatedData);
-        $orderItem = $this->orderHelper->getOrderItem($order, 'simple-product');
+        $orderItem = $this->orderHelper->getOrderItem($order, 'tax-simple-product');
         $this->compare->compareOrderItemData($orderItem, $quoteItemData);
 
         \Magento\TestFramework\Helper\Bootstrap::getInstance()->loadArea('adminhtml');
-        $this->tests->invoiceOnline($order, ['simple-product' => 2]);
+        $this->tests->invoiceOnline($order, ['tax-simple-product' => 2]);
         $order = $this->orderHelper->refreshOrder($order);
         $invoicesCollection = $order->getInvoiceCollection();
         $this->assertEquals(1, $invoicesCollection->getSize());
         $invoice = $invoicesCollection->getFirstItem();
         $this->compare->compareInvoiceData($invoice, $calculatedData);
-        $invoiceItem = $this->invoiceHelper->getInvoiceItem($invoice, 'simple-product');
+        $invoiceItem = $this->invoiceHelper->getInvoiceItem($invoice, 'tax-simple-product');
         $this->compare->compareInvoiceItemData($invoiceItem, $quoteItemData);
     }
 }

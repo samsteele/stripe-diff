@@ -2,8 +2,8 @@
 
 $settings = get_defined_constants();
 
-$publicKey = $settings['API_PK_TEST'];
-$secretKey = $settings['API_SK_TEST'];
+$publicKey = $settings['TAX_API_PK_TEST'];
+$secretKey = $settings['TAX_API_SK_TEST'];
 
 $objectManager = \Magento\TestFramework\ObjectManager::getInstance();
 $configResource = $objectManager->get(\Magento\Config\Model\ResourceModel\Config::class);

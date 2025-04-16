@@ -2,6 +2,9 @@
 
 namespace StripeIntegration\Payments\Exception;
 
+/**
+ * @codeCoverageIgnore
+ */
 class CacheInvalidationException extends \Magento\Framework\Exception\LocalizedException
 {
     public $statusCode;

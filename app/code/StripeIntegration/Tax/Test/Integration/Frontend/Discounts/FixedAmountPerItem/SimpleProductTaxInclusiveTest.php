@@ -44,11 +44,11 @@ class SimpleProductTaxInclusiveTest extends \PHPUnit\Framework\TestCase
         $quoteData = $this->calculator->calculateQuoteData(80 + 40, 1, 5 + 5, $taxBehaviour);
         $this->compare->compareQuoteData($this->quote->getQuote(), $quoteData);
 
-        $quoteItem = $this->quote->getQuoteItem('simple-product');
+        $quoteItem = $this->quote->getQuoteItem('tax-simple-product');
         $quoteItemData = $this->calculator->calculateQuoteItemData(100, 80, 5, 1, $taxBehaviour, [40], true);
         $this->compare->compareQuoteItemData($quoteItem, $quoteItemData);
 
-        $quoteItem = $this->quote->getQuoteItem('simple-product-bundle-4');
+        $quoteItem = $this->quote->getQuoteItem('tax-simple-product-bundle-4');
         $quoteItemData = $this->calculator->calculateQuoteItemData(60, 40, 5, 1, $taxBehaviour, [80], false);
         $this->compare->compareQuoteItemData($quoteItem, $quoteItemData);
     }

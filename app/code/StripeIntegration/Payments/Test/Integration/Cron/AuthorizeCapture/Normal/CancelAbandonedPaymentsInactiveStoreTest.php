@@ -37,7 +37,7 @@ class CancelAbandonedPaymentsInactiveStoreTest extends \PHPUnit\Framework\TestCa
             ->setShippingAddress("Berlin")
             ->setShippingMethod("FlatRate")
             ->setBillingAddress("Berlin")
-            ->setPaymentMethod("SOFORT");
+            ->setPaymentMethod("RedirectBasedMethod");
 
         $order = $this->quote->placeOrder();
 

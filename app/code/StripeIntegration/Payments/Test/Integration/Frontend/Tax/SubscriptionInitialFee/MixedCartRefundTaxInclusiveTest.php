@@ -4,13 +4,14 @@ namespace StripeIntegration\Payments\Test\Integration\Frontend\Tax\SubscriptionI
 
 use StripeIntegration\Tax\Test\Integration\Helper\Calculator;
 
-class MixedCartRefundTaxInclusiveTest extends BaseSubscription
+class MixedCartRefundTaxInclusiveTest extends \PHPUnit\Framework\TestCase
 {
     private $objectManager;
     private $quote;
     private $stripeConfig;
     private $tests;
     private $calculator;
+    private $subscriptionsHelper;
 
     public function setUp(): void
     {
@@ -19,6 +20,7 @@ class MixedCartRefundTaxInclusiveTest extends BaseSubscription
         $this->quote = new \StripeIntegration\Payments\Test\Integration\Helper\Quote();
         $this->stripeConfig = $this->objectManager->get(\StripeIntegration\Payments\Model\Config::class);
         $this->calculator = new Calculator('Romania');
+        $this->subscriptionsHelper = new \StripeIntegration\Payments\Test\Integration\Helper\Subscriptions($this);
     }
 
     /**
@@ -59,7 +61,7 @@ class MixedCartRefundTaxInclusiveTest extends BaseSubscription
             'tax_percent' => $this->calculator->getTaxRate(),
             'mode' => 'inclusive'
         ];
-        $this->compareSubscriptionDetails($order, $subscriptionDetails);
+        $this->subscriptionsHelper->compareSubscriptionDetails($order, $subscriptionDetails);
 
         $orderTotal = 66;
 

@@ -17,7 +17,6 @@ class CreateTransactionReversal implements ObserverInterface
 {
     private $stripeTransactionReversal;
     private $sequenceManager;
-    private $orderHelper;
     private $serializer;
     private $taxFlow;
     private $transactionsHelper;
@@ -26,7 +25,6 @@ class CreateTransactionReversal implements ObserverInterface
     public function __construct(
         StripeTransactionReversal $stripeTransactionReversal,
         Manager $sequenceManager,
-        Order $orderHelper,
         SerializerInterface $serializer,
         TaxFlow $taxFlow,
         Transactions $transactionsHelper,
@@ -35,7 +33,6 @@ class CreateTransactionReversal implements ObserverInterface
     {
         $this->stripeTransactionReversal = $stripeTransactionReversal;
         $this->sequenceManager = $sequenceManager;
-        $this->orderHelper = $orderHelper;
         $this->serializer = $serializer;
         $this->taxFlow = $taxFlow;
         $this->transactionsHelper = $transactionsHelper;
@@ -52,8 +49,7 @@ class CreateTransactionReversal implements ObserverInterface
         // and the tax was calculated using Stripe Tax
         if ($this->stripeTransactionReversal->isEnabled() &&
             $creditMemo->getInvoice() &&
-            $creditMemo->getInvoice()->getStripeTaxTransactionId() &&
-            !$this->orderHelper->isOrderTaxTransactionFullyReversed($creditMemo->getOrder(), $creditMemo->getInvoice()->getStripeTaxTransactionId())
+            $creditMemo->getInvoice()->getStripeTaxTransactionId()
         ) {
             // If there is no increment id set on the credit memo, we set it here to be able to use it as the
             // reference. During the save process, the credit memo object is checked for an increment id and

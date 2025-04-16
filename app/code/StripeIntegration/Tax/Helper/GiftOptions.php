@@ -2,6 +2,9 @@
 
 namespace StripeIntegration\Tax\Helper;
 
+/**
+ * @codeCoverageIgnoreFile This is a class which will be used in Magento Enterprise installations.
+ */
 class GiftOptions
 {
     public const ITEM_GIFT_WRAPPING_OPTION_SUFFIX = 'item_gw';

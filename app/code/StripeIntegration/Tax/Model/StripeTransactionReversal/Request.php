@@ -2,17 +2,10 @@
 
 namespace StripeIntegration\Tax\Model\StripeTransactionReversal;
 
-
-
 use StripeIntegration\Tax\Helper\Currency;
-use StripeIntegration\Tax\Helper\Logger;
-use StripeIntegration\Tax\Helper\Transactions;
-use StripeIntegration\Tax\Model\ResourceModel\Transaction\LineItem\CollectionFactory;
-use StripeIntegration\Tax\Model\StripeTransaction\Transaction;
+use StripeIntegration\Tax\Helper\DateTime;
 use StripeIntegration\Tax\Model\StripeTransactionReversal\Request\LineItems;
 use StripeIntegration\Tax\Model\StripeTransactionReversal\Request\ShippingCost;
-use StripeIntegration\Tax\Model\Config;
-use StripeIntegration\Tax\Helper\Order;
 
 class Request
 {
@@ -32,16 +25,19 @@ class Request
     private $shippingCost;
     private $lineItems;
     private $currencyHelper;
+    private $dateTimeHelper;
 
     public function __construct(
         ShippingCost $shippingCost,
         LineItems $lineItems,
-        Currency $currencyHelper
+        Currency $currencyHelper,
+        DateTime $dateTimeHelper
     )
     {
         $this->shippingCost = $shippingCost;
         $this->lineItems = $lineItems;
         $this->currencyHelper = $currencyHelper;
+        $this->dateTimeHelper = $dateTimeHelper;
     }
 
     /**
@@ -71,10 +67,10 @@ class Request
         $this->expand = ['line_items'];
         if ($invoice) {
             $this->originalTransaction = $invoice->getStripeTaxTransactionId();
-            $this->reference = sprintf('%s_%s_%s', $creditMemo->getIncrementId(), $invoice->getIncrementId(), time());
+            $this->reference = sprintf('%s_%s_%s', $creditMemo->getIncrementId(), $invoice->getIncrementId(), $this->dateTimeHelper->getTimestampInMilliseconds());
         } else {
             $this->originalTransaction = $creditMemo->getInvoice()->getStripeTaxTransactionId();
-            $this->reference = sprintf('%s_%s_%s', $creditMemo->getIncrementId(), $creditMemo->getInvoice()->getIncrementId(), time());
+            $this->reference = sprintf('%s_%s_%s', $creditMemo->getIncrementId(), $creditMemo->getInvoice()->getIncrementId(), $this->dateTimeHelper->getTimestampInMilliseconds());
         }
 
         if ($this->isCreditmemoPartial($creditMemo)) {
@@ -132,11 +128,7 @@ class Request
 
     public function formCommandLineData($lineItem, $quantity, $order, $additionalFeesItems, $shippingItem = null, $shipping = null)
     {
-        if (is_array($lineItem)) {
-            if ($lineItem[0]->getQtyRemaining() < $quantity) {
-                $quantity = $lineItem[0]->getQtyRemaining();
-            }
-        } else {
+        if (!is_array($lineItem)) {
             if ($lineItem->getQtyRemaining() < $quantity) {
                 $quantity = $lineItem->getQtyRemaining();
             }
@@ -158,9 +150,9 @@ class Request
             foreach ($lineItem as $item) {
                 $lineItemsRefs[] = $item->getReference();
             }
-            return sprintf('cli_reversal_%s_%s', implode('-', $lineItemsRefs), time());
+            return sprintf('cli_reversal_%s_%s', implode('-', $lineItemsRefs), $this->dateTimeHelper->getTimestampInMilliseconds());
         } else {
-            return sprintf('cli_reversal_%s_%s', $lineItem->getReference(), time());
+            return sprintf('cli_reversal_%s_%s', $lineItem->getReference(), $this->dateTimeHelper->getTimestampInMilliseconds());
         }
     }
 
@@ -176,9 +168,16 @@ class Request
     public function getCommandLineMode($lineItem, $quantity, $order, $shippingItem = null, $shipping = null)
     {
         if (is_array($lineItem)) {
+            $lineItemsFullRevert = true;
+            foreach ($lineItem as $item) {
+                if ($item->getQty() > ($quantity * $item->getQtyMultiplier())) {
+                    $lineItemsFullRevert = false;
+                    break;
+                }
+            }
             if (isset($lineItem[0]) &&
                 $lineItem[0]->getTransaction()->getAllLineItemsCount() == count($lineItem) &&
-                $lineItem[0]->getQty() == $quantity
+                $lineItemsFullRevert
             ) {
                 if ($shippingItem) {
                     if ($shippingItem->getAmount() == $this->currencyHelper->magentoAmountToStripeAmount($shipping, $order->getOrderCurrencyCode())) {

@@ -182,6 +182,7 @@ class RecurringOrder
     {
         $this->validateSubscriptionItems($originalOrder, $invoice);
 
+        $this->checkoutFlow->isRecurringSubscriptionOrderBeingPlaced = true;
         $quote = $this->createQuoteFrom($originalOrder);
         $this->setQuoteCustomerFrom($originalOrder, $quote);
         $this->setQuoteAddressesFrom($originalOrder, $quote);
@@ -195,7 +196,6 @@ class RecurringOrder
         $this->quoteHelper->saveQuote($quote);
 
         // Create Order From Quote
-        $this->checkoutFlow->isRecurringSubscriptionOrderBeingPlaced = true;
         $order = $this->quoteManagement->submit($quote);
         $this->addOrderCommentsTo($order, $originalOrder->getIncrementId(), $invoice->subscription->id);
         $this->setTransactionDetailsFor($order, $invoice->payment_intent);
@@ -206,6 +206,8 @@ class RecurringOrder
 
     public function reOrderFromQuoteId($quoteId, $invoiceId)
     {
+        $this->checkoutFlow->isRecurringSubscriptionOrderBeingPlaced = true;
+
         $stripe = $this->config->getStripeClient();
         /** @var \Stripe\Invoice $invoice */
         $invoice = $stripe->invoices->retrieve($invoiceId, ['expand' => ['subscription']]);
@@ -217,9 +219,7 @@ class RecurringOrder
         $quote->setPaymentMethod("stripe_payments");
         $data = [
             'method' => 'stripe_payments',
-            'additional_data' => [
-                'is_recurring_subscription' => true
-            ]
+            'additional_data' => []
         ];
 
         $quote->getPayment()->importData($data);
@@ -302,9 +302,8 @@ class RecurringOrder
             }
 
             // Release the quote to be deleted by cron jobs
-            $quote->setIsActive(false);
             $quote->setIsUsedForRecurringOrders(false);
-            $this->quoteHelper->saveQuote($quote);
+            $this->quoteHelper->deactivateQuote($quote);
         }
         catch (\Exception $e)
         {
@@ -406,9 +405,6 @@ class RecurringOrder
         if (empty($data['additional_data']))
             $data['additional_data'] = [];
 
-        $data['additional_data']['is_recurring_subscription'] = true;
-
-        $quote->setIsRecurringOrder(true);
         $quote->getPayment()->importData($data);
     }
 
@@ -561,7 +557,6 @@ class RecurringOrder
         $quote->setStoreId($store->getId());
         $quote->setQuoteCurrencyCode($originalOrder->getOrderCurrencyCode());
         $quote->setCustomerEmail($originalOrder->getCustomerEmail());
-        $quote->setIsRecurringOrder(true);
 
         return $quote;
     }

@@ -13,8 +13,8 @@ class SubscriptionOptions extends \Magento\Framework\Model\AbstractModel impleme
         \StripeIntegration\Payments\Model\ConfigFactory $configFactory,
         \Magento\Framework\Model\Context $context,
         \Magento\Framework\Registry $registry,
-        \Magento\Framework\Model\ResourceModel\AbstractResource $resource = null,
-        \Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null,
+        ?\Magento\Framework\Model\ResourceModel\AbstractResource $resource = null,
+        ?\Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null,
         array $data = []
     ) {
         $this->configFactory = $configFactory;

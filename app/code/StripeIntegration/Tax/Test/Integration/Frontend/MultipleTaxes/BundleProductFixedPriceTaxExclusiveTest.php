@@ -44,7 +44,7 @@ class BundleProductFixedPriceTaxExclusiveTest extends \PHPUnit\Framework\TestCas
         $quoteData = $this->calculator->calculateQuoteDataMultipleTaxes(220, 2, 5, $taxBehaviour);
         $this->compare->compareQuoteData($this->quote->getQuote(), $quoteData);
 
-        $parentQuoteItem = $this->quote->getQuoteItem('bundle-fixed-price-simple-product-bundle-2-simple-product-bundle-4');
+        $parentQuoteItem = $this->quote->getQuoteItem('tax-bundle-fixed-price-tax-simple-product-bundle-2-tax-simple-product-bundle-4');
         $parentQuoteItemData = $this->calculator->calculateQuoteItemData(220, 0, 2, $taxBehaviour);
         $this->compare->compareQuoteItemData($parentQuoteItem, $parentQuoteItemData);
     }

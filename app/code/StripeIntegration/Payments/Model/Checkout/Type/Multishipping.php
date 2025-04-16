@@ -16,7 +16,6 @@ class Multishipping extends \Magento\Multishipping\Model\Checkout\Type\Multiship
     private $logger = null;
     private $eventManager = null;
     private $session;
-    private $checkoutSession;
 
     public function __construct(
         \Magento\Checkout\Model\Session $checkoutSession,
@@ -42,10 +41,10 @@ class Multishipping extends \Magento\Multishipping\Model\Checkout\Type\Multiship
         \Magento\Quote\Model\Quote\TotalsCollector $totalsCollector,
         \Magento\Multishipping\Model\Checkout\Type\Multishipping\PlaceOrderFactory $placeOrderFactory,
         array $data = [],
-        \Magento\Quote\Api\Data\CartExtensionFactory $cartExtensionFactory = null,
-        AllowedCountries $allowedCountryReader = null,
-        \Psr\Log\LoggerInterface $logger = null,
-        \Magento\Framework\Api\DataObjectHelper $dataObjectHelper = null
+        ?\Magento\Quote\Api\Data\CartExtensionFactory $cartExtensionFactory = null,
+        ?AllowedCountries $allowedCountryReader = null,
+        ?\Psr\Log\LoggerInterface $logger = null,
+        ?\Magento\Framework\Api\DataObjectHelper $dataObjectHelper = null
     ) {
         parent::__construct(
             $checkoutSession,
@@ -80,7 +79,6 @@ class Multishipping extends \Magento\Multishipping\Model\Checkout\Type\Multiship
         $this->placeOrderFactory = $placeOrderFactory;
         $this->logger = $logger;
         $this->session = $session;
-        $this->checkoutSession = $checkoutSession;
         $this->eventManager = $eventManager;
     }
 
@@ -149,13 +147,6 @@ class Multishipping extends \Magento\Multishipping\Model\Checkout\Type\Multiship
 
         if (!empty($placedAddressItems))
             $this->removePlacedItemsFromQuote($shippingAddresses, $placedAddressItems);
-    }
-
-    public function deactivateQuote($quote)
-    {
-        $this->checkoutSession->setLastQuoteId($quote->getId());
-        $quote->setIsActive(false);
-        $this->quoteRepository->save($quote);
     }
 
     public function setResultsPageData($quote, $successfulOrders, $failedOrders, $exceptionList)

@@ -20,6 +20,7 @@ class SimpleProductTaxExclusiveTest extends \PHPUnit\Framework\TestCase
     private $tests;
     private $orderHelper;
     private $invoiceHelper;
+    private $creditmemoHelper;
 
     public function setUp(): void
     {
@@ -31,6 +32,7 @@ class SimpleProductTaxExclusiveTest extends \PHPUnit\Framework\TestCase
         $this->tests = new \StripeIntegration\Tax\Test\Integration\Helper\Tests();
         $this->orderHelper = new \StripeIntegration\Tax\Test\Integration\Helper\Order();
         $this->invoiceHelper = new \StripeIntegration\Tax\Test\Integration\Helper\Invoice();
+        $this->creditmemoHelper = new \StripeIntegration\Tax\Test\Integration\Helper\Creditmemo();
     }
 
     /**
@@ -48,7 +50,7 @@ class SimpleProductTaxExclusiveTest extends \PHPUnit\Framework\TestCase
             ->setBillingAddress("Romania")
             ->setPaymentMethod("checkmo");
 
-        $quoteItem = $this->quote->getQuoteItem('simple-product');
+        $quoteItem = $this->quote->getQuoteItem('tax-simple-product');
         $product = $this->productRepository->get($quoteItem->getSku());
         $price = $product->getPrice();
         $calculatedData = $this->calculator->calculateData($price, 2, 5, $taxBehaviour);
@@ -60,17 +62,44 @@ class SimpleProductTaxExclusiveTest extends \PHPUnit\Framework\TestCase
         $order = $this->quote->placeOrder();
         $order = $this->orderHelper->refreshOrder($order);
         $this->compare->compareOrderData($order, $calculatedData);
-        $orderItem = $this->orderHelper->getOrderItem($order, 'simple-product');
+        $orderItem = $this->orderHelper->getOrderItem($order, 'tax-simple-product');
         $this->compare->compareOrderItemData($orderItem, $quoteItemData);
 
         \Magento\TestFramework\Helper\Bootstrap::getInstance()->loadArea('adminhtml');
-        $this->tests->invoiceOnline($order, ['simple-product' => 2]);
+        $this->tests->invoiceOnline($order, ['tax-simple-product' => 2]);
         $order = $this->orderHelper->refreshOrder($order);
         $invoicesCollection = $order->getInvoiceCollection();
         $this->assertEquals(1, $invoicesCollection->getSize());
         $invoice = $invoicesCollection->getFirstItem();
         $this->compare->compareInvoiceData($invoice, $calculatedData);
-        $invoiceItem = $this->invoiceHelper->getInvoiceItem($invoice, 'simple-product');
+        $invoiceItem = $this->invoiceHelper->getInvoiceItem($invoice, 'tax-simple-product');
         $this->compare->compareInvoiceItemData($invoiceItem, $quoteItemData);
+
+        // You should be able to create credit memos
+        $this->assertTrue($order->canCreditmemo());
+        $shipping = 10;
+        // Create the credit memo and compare the data for it
+        $creditmemo = $this->tests->refundOffline($order, ['tax-simple-product' => 1], $shipping);
+        $order = $this->orderHelper->refreshOrder($order);
+        $creditmemoData = $this->calculator->calculateData($price, 1, $shipping, $taxBehaviour);
+        $creditmemoItemData = $this->calculator->calculateQuoteItemData($price, $shipping, 1, $taxBehaviour);
+        $creditmemoItem = $this->creditmemoHelper->getCreditmemoItem($creditmemo, 'tax-simple-product');
+        // Compare credit memo data
+        $this->compare->compareCreditmemoData($creditmemo, $creditmemoData);
+        $this->compare->compareCreditMemoItemData($creditmemoItem, $creditmemoItemData);
+        // You can still create credit memos for the order
+        $this->assertTrue($order->canCreditmemo());
+
+        // Create the credit memo and compare the data for it
+        $creditmemo = $this->tests->refundOffline($order, ['tax-simple-product' => 1]);
+        $order = $this->orderHelper->refreshOrder($order);
+        $creditmemoData = $this->calculator->calculateData($price, 1, 0, $taxBehaviour);
+        $creditmemoItemData = $this->calculator->calculateQuoteItemData($price, 0, 1, $taxBehaviour);
+        $creditmemoItem = $this->creditmemoHelper->getCreditmemoItem($creditmemo, 'tax-simple-product');
+        // Compare credit memo data
+        $this->compare->compareCreditmemoData($creditmemo, $creditmemoData);
+        $this->compare->compareCreditMemoItemData($creditmemoItem, $creditmemoItemData);
+        // You can still create credit memos for the order
+        $this->assertFalse($order->canCreditmemo());
     }
 }

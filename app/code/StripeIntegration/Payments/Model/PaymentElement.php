@@ -58,8 +58,8 @@ class PaymentElement extends \Magento\Framework\Model\AbstractModel
         \StripeIntegration\Payments\Model\ResourceModel\SetupIntent\Collection $setupIntentCollection,
         \Magento\Framework\Model\Context $context,
         \Magento\Framework\Registry $registry,
-        \Magento\Framework\Model\ResourceModel\AbstractResource $resource = null,
-        \Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null,
+        ?\Magento\Framework\Model\ResourceModel\AbstractResource $resource = null,
+        ?\Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null,
         array $data = []
         )
     {
@@ -106,9 +106,7 @@ class PaymentElement extends \Magento\Framework\Model\AbstractModel
         }
         catch (OrderPlacedAndPaidException $e)
         {
-            $quote = $this->quoteHelper->loadQuoteById($order->getQuoteId());
-            $quote->setIsActive(false);
-            $this->quoteHelper->saveQuote($quote);
+            $this->quoteHelper->deactivateQuoteById($order->getQuoteId());
             return $this->helper->throwError(__("The order has already been placed and paid."));
         }
 

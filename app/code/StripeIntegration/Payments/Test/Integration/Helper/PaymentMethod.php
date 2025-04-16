@@ -66,11 +66,11 @@ class PaymentMethod
                 ];
                 break;
 
-            case 'SOFORT':
+            case 'RedirectBasedMethod':
                 $data = [
                     'method' => 'stripe_payments',
                     'additional_data' => [
-                        "payment_method" => $this->createPaymentMethod('sofort', $billingAddressIdentifier)->id
+                        "payment_method" => $this->createPaymentMethod('bancontact', $billingAddressIdentifier)->id
                     ]
                 ];
                 break;
@@ -156,10 +156,8 @@ class PaymentMethod
             case "card":
                 $pm = $this->stripeConfig->getStripeClient()->paymentMethods->retrieve('pm_card_visa');
                 return $pm;
-            case "sofort":
-                $params["sofort"] = [
-                    'country' => $params["billing_details"]["address"]["country"]
-                ];
+            case "bancontact":
+                $params["bancontact"] = [];
                 break;
             case "sepa_debit":
                 $params["sepa_debit"] = [

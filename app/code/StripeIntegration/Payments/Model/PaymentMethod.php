@@ -58,8 +58,8 @@ class PaymentMethod extends \Magento\Payment\Model\Method\Adapter
         \StripeIntegration\Payments\Helper\Quote $quoteHelper,
         \StripeIntegration\Payments\Helper\Order $orderHelper,
         \StripeIntegration\Payments\Helper\CheckoutSession $checkoutSessionHelper,
-        \Magento\Payment\Gateway\Command\CommandPoolInterface $commandPool = null,
-        \Magento\Payment\Gateway\Validator\ValidatorPoolInterface $validatorPool = null
+        ?\Magento\Payment\Gateway\Command\CommandPoolInterface $commandPool = null,
+        ?\Magento\Payment\Gateway\Validator\ValidatorPoolInterface $validatorPool = null
     ) {
         $this->request = $context->getRequest();
         $this->config = $config;
@@ -303,7 +303,7 @@ class PaymentMethod extends \Magento\Payment\Model\Method\Adapter
 
     public function pay(InfoInterface $payment, $amount)
     {
-        if ($payment->getAdditionalInformation("is_recurring_subscription"))
+        if ($this->checkoutFlow->isRecurringSubscriptionOrderBeingPlaced)
             return $this;
 
         if (!$payment->getAdditionalInformation("token") && !$payment->getAdditionalInformation("confirmation_token"))
@@ -535,9 +535,9 @@ class PaymentMethod extends \Magento\Payment\Model\Method\Adapter
         return parent::canCapture();
     }
 
-    public function isAvailable(\Magento\Quote\Api\Data\CartInterface $quote = null)
+    public function isAvailable(?\Magento\Quote\Api\Data\CartInterface $quote = null)
     {
-        if ($quote && $quote->getIsRecurringOrder())
+        if ($this->checkoutFlow->isPaymentMethodAvailable())
             return true;
 
         if ($this->checkoutSessionHelper->isSubscriptionUpdate())

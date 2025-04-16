@@ -20,6 +20,7 @@ class SimpleProductSpecialPriceTaxInclusiveTest extends \PHPUnit\Framework\TestC
     private $tests;
     private $orderHelper;
     private $invoiceHelper;
+    private $creditmemoHelper;
 
     public function setUp(): void
     {
@@ -31,6 +32,7 @@ class SimpleProductSpecialPriceTaxInclusiveTest extends \PHPUnit\Framework\TestC
         $this->tests = new \StripeIntegration\Tax\Test\Integration\Helper\Tests();
         $this->orderHelper = new \StripeIntegration\Tax\Test\Integration\Helper\Order();
         $this->invoiceHelper = new \StripeIntegration\Tax\Test\Integration\Helper\Invoice();
+        $this->creditmemoHelper = new \StripeIntegration\Tax\Test\Integration\Helper\Creditmemo();
     }
 
     /**
@@ -48,7 +50,7 @@ class SimpleProductSpecialPriceTaxInclusiveTest extends \PHPUnit\Framework\TestC
             ->setBillingAddress("Romania")
             ->setPaymentMethod("checkmo");
 
-        $quoteItem = $this->quote->getQuoteItem('simple-product-special-price');
+        $quoteItem = $this->quote->getQuoteItem('tax-simple-product-special-price');
         $product = $this->productRepository->get($quoteItem->getSku());
         $price = $product->getSpecialPrice();
         $calculatedData = $this->calculator->calculateData($price, 2, 5, $taxBehaviour);
@@ -60,17 +62,32 @@ class SimpleProductSpecialPriceTaxInclusiveTest extends \PHPUnit\Framework\TestC
         $order = $this->quote->placeOrder();
         $order = $this->orderHelper->refreshOrder($order);
         $this->compare->compareOrderData($order, $calculatedData);
-        $orderItem = $this->orderHelper->getOrderItem($order, 'simple-product-special-price');
+        $orderItem = $this->orderHelper->getOrderItem($order, 'tax-simple-product-special-price');
         $this->compare->compareOrderItemData($orderItem, $quoteItemData);
 
         \Magento\TestFramework\Helper\Bootstrap::getInstance()->loadArea('adminhtml');
-        $this->tests->invoiceOnline($order, ['simple-product-special-price' => 2]);
+        $this->tests->invoiceOnline($order, ['tax-simple-product-special-price' => 2]);
         $order = $this->orderHelper->refreshOrder($order);
         $invoicesCollection = $order->getInvoiceCollection();
         $this->assertEquals(1, $invoicesCollection->getSize());
         $invoice = $invoicesCollection->getFirstItem();
         $this->compare->compareInvoiceData($invoice, $calculatedData);
-        $invoiceItem = $this->invoiceHelper->getInvoiceItem($invoice, 'simple-product-special-price');
+        $invoiceItem = $this->invoiceHelper->getInvoiceItem($invoice, 'tax-simple-product-special-price');
         $this->compare->compareInvoiceItemData($invoiceItem, $quoteItemData);
+
+        $this->assertTrue($order->canCreditmemo());
+
+        // Create the credit memo and compare the data for it
+        $shipping = 10;
+        $creditmemo = $this->tests->refundOffline($order, ['tax-simple-product-special-price' => 2], 8.4);
+        $order = $this->orderHelper->refreshOrder($order);
+        $creditmemoData = $this->calculator->calculateData($price, 2, 5, $taxBehaviour);
+        $creditmemoItemData = $this->calculator->calculateQuoteItemData($price, $shipping, 2, $taxBehaviour);
+        $creditmemoItem = $this->creditmemoHelper->getCreditmemoItem($creditmemo, 'tax-simple-product-special-price');
+        // Compare credit memo data
+        $this->compare->compareCreditmemoData($creditmemo, $creditmemoData);
+        $this->compare->compareCreditMemoItemData($creditmemoItem, $creditmemoItemData);
+        // You can still create credit memos for the order
+        $this->assertFalse($order->canCreditmemo());
     }
 }

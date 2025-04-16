@@ -121,10 +121,12 @@ class Element extends \StripeIntegration\Payments\Block\PaymentInfo\Checkout
                 $paymentMethod = $this->stripePaymentMethodFactory->create()->fromPaymentMethodId($paymentMethod)->getStripeObject();
                 return $this->paymentMethod = $paymentMethod;
             }
+            // @codeCoverageIgnoreStart
             catch (\Exception $e)
             {
                 $this->helper->logInfo("Could not retrieve payment method from Stripe: " . $e->getMessage());
             }
+            // @codeCoverageIgnoreEnd
         }
 
         return $this->paymentMethod = null;
@@ -186,11 +188,13 @@ class Element extends \StripeIntegration\Payments\Block\PaymentInfo\Checkout
                     $subscriptionId = $info->getAdditionalInformation("subscription_id");
                     $this->subscription = $this->paymentsConfig->getStripeClient()->subscriptions->retrieve($subscriptionId);
                 }
+                // @codeCoverageIgnoreStart
                 catch (\Exception $e)
                 {
                     $this->helper->logInfo("Could not retrieve subscription from Stripe: " . $e->getMessage());
                     return null;
                 }
+                // @codeCoverageIgnoreEnd
             }
         }
 
@@ -232,10 +236,12 @@ class Element extends \StripeIntegration\Payments\Block\PaymentInfo\Checkout
             $paymentIntent = $this->stripePaymentIntent->fromPaymentIntentId($transactionId, ['payment_method', 'latest_charge', 'charges'])->getStripeObject();
             return $this->paymentIntents[$transactionId] = $paymentIntent;
         }
+        // @codeCoverageIgnoreStart
         catch (\Exception $e)
         {
             return $this->paymentIntents[$transactionId] = null;
         }
+        // @codeCoverageIgnoreEnd
     }
 
     public function getSetupIntent()
@@ -260,10 +266,12 @@ class Element extends \StripeIntegration\Payments\Block\PaymentInfo\Checkout
         {
             return $this->setupIntents[$setupIntentId] = $this->paymentsConfig->getStripeClient()->setupIntents->retrieve($setupIntentId, ['expand' => ['payment_method']]);
         }
+        // @codeCoverageIgnoreStart
         catch (\Exception $e)
         {
             return $this->setupIntents[$setupIntentId] = null;
         }
+        // @codeCoverageIgnoreEnd
     }
 
     public function getMode()

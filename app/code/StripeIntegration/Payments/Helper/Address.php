@@ -328,4 +328,40 @@ class Address
 
         return true;
     }
+
+    public function getFirstnameFromStripeAddress($stripeAddress)
+    {
+        if (empty($stripeAddress))
+            return null;
+
+        if (empty($stripeAddress['name']))
+            return null;
+
+        $payerName = $this->nameParserFactory->create()->fromString($stripeAddress['name']);
+
+        return $payerName->getFirstName();
+    }
+
+    public function getLastnameFromStripeAddress($stripeAddress)
+    {
+        if (empty($stripeAddress))
+            return null;
+
+        if (empty($stripeAddress['name']))
+            return null;
+
+        $payerName = $this->nameParserFactory->create()->fromString($stripeAddress['name']);
+
+        return $payerName->getLastName();
+    }
+
+    public function getPhoneFromStripeAddress($stripeAddress)
+    {
+        return $stripeAddress['phone'] ?? null;
+    }
+
+    public function getEmailFromStripeAddress($stripeAddress)
+    {
+        return $stripeAddress['email'] ?? null;
+    }
 }

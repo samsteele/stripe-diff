@@ -15,6 +15,7 @@ class Flow
     public $isQuoteCorrupted = false;
     public $isCleaningExpiredOrders = false;
     public $isCheckoutSessionRecreated = false;
+    public $isSwitchingSubscriptionPlan = false;
     private $disableZeroInitialPrices = false;
 
     public function shouldNotBillTrialSubscriptionItems()
@@ -32,5 +33,10 @@ class Flow
     public function enableZeroInitialPrices()
     {
         $this->disableZeroInitialPrices = false;
+    }
+
+    public function isPaymentMethodAvailable()
+    {
+        return $this->isRecurringSubscriptionOrderBeingPlaced || $this->isSwitchingSubscriptionPlan;
     }
 }

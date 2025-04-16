@@ -43,7 +43,7 @@ class ConfigurableProductTaxInclusiveTest extends \PHPUnit\Framework\TestCase
             ->setBillingAddress("California")
             ->setPaymentMethod("checkmo");
 
-        $quoteItem = $this->quote->getQuoteItem('simple-product-red');
+        $quoteItem = $this->quote->getQuoteItem('tax-simple-product-red');
         $product = $this->productRepository->get($quoteItem->getSku());
 
         $price = $product->getPrice();

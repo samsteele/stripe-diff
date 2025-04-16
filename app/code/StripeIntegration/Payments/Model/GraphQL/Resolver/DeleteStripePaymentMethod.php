@@ -18,8 +18,8 @@ class DeleteStripePaymentMethod implements \Magento\Framework\GraphQl\Query\Reso
         \Magento\Framework\GraphQl\Config\Element\Field $field,
         $context,
         \Magento\Framework\GraphQl\Schema\Type\ResolveInfo $info,
-        array $value = null,
-        array $args = null
+        ?array $value = null,
+        ?array $args = null
     ) {
         if (empty($args['input']['payment_method']))
             throw new GraphQlInputException(__("Please specify a payment method ID."));

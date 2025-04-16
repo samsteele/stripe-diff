@@ -6,17 +6,14 @@ class Invoice
 {
     private $transactions = [];
     private $transactionSearchResultFactory;
-    private $dataHelper;
     private $subscriptionProductFactory;
 
     public function __construct(
         \Magento\Sales\Api\Data\TransactionSearchResultInterfaceFactory $transactionSearchResultFactory,
-        \StripeIntegration\Payments\Helper\Data $dataHelper,
         \StripeIntegration\Payments\Model\SubscriptionProductFactory $subscriptionProductFactory
     )
     {
         $this->transactionSearchResultFactory = $transactionSearchResultFactory;
-        $this->dataHelper = $dataHelper;
         $this->subscriptionProductFactory = $subscriptionProductFactory;
     }
 

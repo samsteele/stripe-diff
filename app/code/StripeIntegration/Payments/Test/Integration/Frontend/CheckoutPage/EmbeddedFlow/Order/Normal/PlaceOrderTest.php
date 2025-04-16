@@ -11,9 +11,11 @@ class PlaceOrderTest extends \PHPUnit\Framework\TestCase
 {
     private $quote;
     private $tests;
+    private $objectManager;
 
     public function setUp(): void
     {
+        $this->objectManager = \Magento\TestFramework\ObjectManager::getInstance();
         $this->tests = new \StripeIntegration\Payments\Test\Integration\Helper\Tests($this);
         $this->quote = new \StripeIntegration\Payments\Test\Integration\Helper\Quote();
     }
@@ -47,5 +49,12 @@ class PlaceOrderTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals(0, $order->getTotalPaid());
         $this->assertEquals($order->getGrandTotal(), $order->getTotalDue());
         $this->assertEquals("processing", $order->getStatus());
+
+        // Switch to the admin area
+        $this->objectManager->get(\Magento\Framework\App\State::class)->setAreaCode('adminhtml');
+        $order = $this->tests->refreshOrder($order);
+
+        // Create the payment info block for $order
+        $this->assertNotEmpty($this->tests->renderPaymentInfoBlock(\StripeIntegration\Payments\Block\PaymentInfo\Element::class, $order));
     }
 }

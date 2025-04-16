@@ -2,6 +2,9 @@
 
 namespace StripeIntegration\Payments\Helper;
 
+/**
+ * @codeCoverageIgnore
+ */
 class Migrate
 {
     public $areaCode = null;

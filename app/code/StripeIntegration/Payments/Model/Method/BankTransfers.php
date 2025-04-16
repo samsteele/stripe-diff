@@ -31,10 +31,10 @@ class BankTransfers extends \Magento\Payment\Model\Method\Adapter
         $code,
         $formBlockType,
         $infoBlockType,
-        CommandPoolInterface $commandPool = null,
-        ValidatorPoolInterface $validatorPool = null,
-        CommandManagerInterface $commandExecutor = null,
-        LoggerInterface $logger = null
+        ?CommandPoolInterface $commandPool = null,
+        ?ValidatorPoolInterface $validatorPool = null,
+        ?CommandManagerInterface $commandExecutor = null,
+        ?LoggerInterface $logger = null
     ) {
         $this->config = $config;
         $this->helper = $helper;
@@ -99,7 +99,7 @@ class BankTransfers extends \Magento\Payment\Model\Method\Adapter
         return parent::assignData($data);
     }
 
-    public function isAvailable(\Magento\Quote\Api\Data\CartInterface $quote = null)
+    public function isAvailable(?\Magento\Quote\Api\Data\CartInterface $quote = null)
     {
         try
         {

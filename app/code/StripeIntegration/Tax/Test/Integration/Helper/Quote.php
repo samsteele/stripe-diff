@@ -123,7 +123,7 @@ class Quote
                 break;
 
             case 'LoggedIn':
-                $this->customer = $customer = $this->customerRepository->get('customer@example.com');
+                $this->customer = $customer = $this->customerRepository->get('customer_tax@example.com');
                 $this->customerSession->setCustomerId($customer->getId());
 
                 $this->quote->assignCustomer($customer);
@@ -277,48 +277,51 @@ class Quote
         switch ($identifier)
         {
             case 'Normal':
-                $this->addProduct('simple-product', 2);
+                $this->addProduct('tax-simple-product', 2);
                 break;
             case 'NormalQty3':
-                $this->addProduct('simple-product', 3);
+                $this->addProduct('tax-simple-product', 3);
                 break;
             case 'NormalMagentoTaxCalculation':
-                $this->addProduct('simple-product-magento-tax-calculation', 1);
+                $this->addProduct('tax-simple-product-magento-tax-calculation', 1);
                 break;
             case 'Virtual':
-                $this->addProduct('virtual-product', 2);
+                $this->addProduct('tax-virtual-product', 2);
                 break;
             case 'TwoProductsSimple':
-                $this->addProduct('simple-product', 1);
-                $this->addProduct('simple-product-bundle-4', 1);
+                $this->addProduct('tax-simple-product', 1);
+                $this->addProduct('tax-simple-product-bundle-4', 1);
                 break;
             case 'SpecialPrice':
-                $this->addProduct('simple-product-special-price', 2);
+                $this->addProduct('tax-simple-product-special-price', 2);
                 break;
             case 'BundleProductDynamic':
-                $this->addProduct('bundle-dynamic', 2, ["simple-product-bundle-1" => 2, "simple-product-bundle-3" => 2]);
+                $this->addProduct('tax-bundle-dynamic', 2, ["tax-simple-product-bundle-1" => 2, "tax-simple-product-bundle-3" => 2]);
+                break;
+            case 'BundleProductDynamicX3':
+                $this->addProduct('tax-bundle-dynamic', 3, ["tax-simple-product-bundle-1" => 2, "tax-simple-product-bundle-3" => 2]);
                 break;
             case 'BundleProductFixedPrice':
-                $this->addProduct('bundle-fixed-price', 2, ["simple-product-bundle-2" => 2, "simple-product-bundle-4" => 2]);
+                $this->addProduct('tax-bundle-fixed-price', 2, ["tax-simple-product-bundle-2" => 2, "tax-simple-product-bundle-4" => 2]);
                 break;
             case 'BundleProductFixedPriceX3':
-                $this->addProduct('bundle-fixed-price', 3, ["simple-product-bundle-2" => 1, "simple-product-bundle-4" => 1]);
+                $this->addProduct('tax-bundle-fixed-price', 3, ["tax-simple-product-bundle-2" => 1, "tax-simple-product-bundle-4" => 1]);
                 break;
             case 'BundleProductFixedPriceShipSeparately':
-                $this->addProduct('bundle-fixed-price-ship-separately', 1, ["simple-product-bundle-2" => 1, "simple-product-bundle-4" => 1]);
+                $this->addProduct('tax-bundle-fixed-price-ship-separately', 1, ["tax-simple-product-bundle-2" => 1, "tax-simple-product-bundle-4" => 1]);
                 break;
             case 'BundleProductFixedPercent':
-                $this->addProduct('bundle-fixed-percent', 2, ["simple-product-bundle-2" => 2, "simple-product-bundle-4" => 2]);
+                $this->addProduct('tax-bundle-fixed-percent', 2, ["tax-simple-product-bundle-2" => 2, "tax-simple-product-bundle-4" => 2]);
                 break;
             case 'ConfigurableProduct':
                 $colourAttribute = $this->eavConfig->getAttribute(\Magento\Catalog\Model\Product::ENTITY, 'test_colour');
                 $options = $colourAttribute->getOptions();
-                $this->addProduct('configurable-product', 1, [["test_colour" => $options[1]->getValue()]]);
+                $this->addProduct('tax-configurable-product', 1, [["test_colour" => $options[1]->getValue()]]);
                 break;
             case 'ConfigurableProductX3':
                 $colourAttribute = $this->eavConfig->getAttribute(\Magento\Catalog\Model\Product::ENTITY, 'test_colour');
                 $options = $colourAttribute->getOptions();
-                $this->addProduct('configurable-product', 3, [["test_colour" => $options[1]->getValue()]]);
+                $this->addProduct('tax-configurable-product', 3, [["test_colour" => $options[1]->getValue()]]);
                 break;
             default:
                 break;

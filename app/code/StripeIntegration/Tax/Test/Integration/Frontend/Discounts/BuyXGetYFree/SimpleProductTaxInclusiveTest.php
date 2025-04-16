@@ -44,7 +44,7 @@ class SimpleProductTaxInclusiveTest extends \PHPUnit\Framework\TestCase
         $quoteData = $this->calculator->calculateQuoteData(100 + 100, 1, 5 + 5 + 5, $taxBehaviour);
         $this->compare->compareQuoteData($this->quote->getQuote(), $quoteData);
 
-        $quoteItem = $this->quote->getQuoteItem('simple-product');
+        $quoteItem = $this->quote->getQuoteItem('tax-simple-product');
         $quoteItemData = $this->calculator->calculateQuoteItemDataBuyXGetYFree(100, 100, 15, 3, 2, $taxBehaviour);
         $this->compare->compareQuoteItemData($quoteItem, $quoteItemData);
     }

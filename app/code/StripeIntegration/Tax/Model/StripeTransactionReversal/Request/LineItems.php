@@ -178,6 +178,7 @@ class LineItems
         $itemForAdditionalFeesCheck = null;
         if (is_array($lineItem)) {
             foreach ($lineItem as $item) {
+                $quantity *= $item->getQtyMultiplier();
                 $this->lineItem->formCommandLineData($item, $quantity);
                 $this->data[] = $this->lineItem->toArray();
                 $itemForAdditionalFeesCheck = $item;
@@ -222,6 +223,11 @@ class LineItems
         return !empty($this->data);
     }
 
+    /**
+     * @codeCoverageIgnore Used in Magento Enterprise installations
+     * @param $includeOrderGW
+     * @return $this
+     */
     public function setIncludeOrderGW($includeOrderGW)
     {
         $this->includeOrderGW = $includeOrderGW;
@@ -229,21 +235,16 @@ class LineItems
         return $this;
     }
 
+    /**
+     * @codeCoverageIgnore Used in Magento Enterprise installations
+     * @param $includeOrderPrintedCard
+     * @return $this
+     */
     public function setIncludeOrderPrintedCard($includeOrderPrintedCard)
     {
         $this->includeOrderPrintedCard = $includeOrderPrintedCard;
 
         return $this;
-    }
-
-    private function initLineItemsData($creditMemo, $transaction)
-    {
-        $lineItemsData = $this->orderHelper->getReversalLineItemsData($creditMemo->getOrder(), $transaction->getId());
-        if (!$lineItemsData) {
-            $lineItemsData = $transaction->formLineItemsData();
-        }
-
-        $this->lineItemsData = $lineItemsData;
     }
 
     public function getLineItemsData()
@@ -257,17 +258,6 @@ class LineItems
         if ($canAddItemAsProcessed) {
             $transaction->addItemProcessed();
         }
-    }
-
-    private function updateRemainingAmounts($reference, $amountReverted, $taxAmountReverted)
-    {
-        $this->lineItemsData[$reference]['remaining_amount'] = $this->lineItemsData[$reference]['remaining_amount'] + $amountReverted;
-        $this->lineItemsData[$reference]['remaining_amount_tax'] = $this->lineItemsData[$reference]['remaining_amount_tax'] + $taxAmountReverted;
-    }
-
-    private function itemHasRemainingAmount($reference)
-    {
-        return $this->lineItemsData[$reference]['remaining_amount'] > 0 || $this->lineItemsData[$reference]['remaining_amount_tax'] > 0;
     }
 
     private function handleOnlineItemAdditionalFee($item, $creditMemo, $transaction)

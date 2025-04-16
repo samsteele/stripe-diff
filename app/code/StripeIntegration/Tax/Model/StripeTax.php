@@ -20,7 +20,6 @@ class StripeTax
     private $responseCache;
     private $response;
     private $logger;
-    private $transactionReversalRequest;
     private $requestCache;
     private $taxFlow;
 
@@ -150,7 +149,7 @@ class StripeTax
         return $this->response;
     }
 
-    public function isValidResponse($calculation, Calculation $stripeCalculation = null)
+    public function isValidResponse($calculation, ?Calculation $stripeCalculation = null)
     {
         // If the calculation is an array it means that it is returned from the cache, which means that it was
         // already checked for validity when it was saved to the cache.

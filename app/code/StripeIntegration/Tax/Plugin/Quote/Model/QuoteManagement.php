@@ -21,7 +21,7 @@ class QuoteManagement
     public function beforePlaceOrder(
         \Magento\Quote\Model\QuoteManagement $subject,
         $cartId,
-        PaymentInterface $paymentMethod = null
+        ?PaymentInterface $paymentMethod = null
     )
     {
         if ($this->stripeTax->isEnabled()) {

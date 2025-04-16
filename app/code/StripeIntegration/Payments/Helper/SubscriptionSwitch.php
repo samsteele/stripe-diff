@@ -19,6 +19,7 @@ class SubscriptionSwitch
     private $paymentsHelper;
     private $quoteHelper;
     private $subscriptionProductFactory;
+    private $checkoutFlow;
 
     public function __construct(
         \StripeIntegration\Payments\Helper\Generic $paymentsHelper,
@@ -26,6 +27,7 @@ class SubscriptionSwitch
         \StripeIntegration\Payments\Helper\Subscriptions $subscriptionsHelper,
         \StripeIntegration\Payments\Model\Config $config,
         \StripeIntegration\Payments\Model\SubscriptionProductFactory $subscriptionProductFactory,
+        \StripeIntegration\Payments\Model\Checkout\Flow $checkoutFlow,
         \Magento\Framework\DB\TransactionFactory $transactionFactory,
         \StripeIntegration\Payments\Helper\RecurringOrder $recurringOrderHelper,
         \StripeIntegration\Payments\Model\Stripe\SubscriptionFactory $stripeSubscriptionFactory
@@ -39,6 +41,7 @@ class SubscriptionSwitch
         $this->recurringOrderHelper = $recurringOrderHelper;
         $this->stripeSubscriptionFactory = $stripeSubscriptionFactory;
         $this->subscriptionProductFactory = $subscriptionProductFactory;
+        $this->checkoutFlow = $checkoutFlow;
     }
 
     // This is called once, it loads all subscriptions from all configured Stripe accounts
@@ -139,10 +142,11 @@ class SubscriptionSwitch
             }
         }
 
+        $this->checkoutFlow->isSwitchingSubscriptionPlan = true;
         $this->customer->fromStripeCustomerId($subscription->customer);
 
         $quote = $this->recurringOrderHelper->createQuoteFrom($originalOrder);
-        $quote->setIsRecurringOrder(false)->setRemoveInitialFee(true);
+        $quote->setRemoveInitialFee(true);
         $this->recurringOrderHelper->setQuoteCustomerFrom($originalOrder, $quote);
         $this->recurringOrderHelper->setQuoteAddressesFrom($originalOrder, $quote);
         $quote->addProduct($toProduct, $subscription->quantity);
@@ -156,9 +160,7 @@ class SubscriptionSwitch
             ]
         ];
         $this->recurringOrderHelper->setQuotePaymentMethodFrom($originalOrder, $quote, $data);
-        $quote->getPayment()
-            ->setAdditionalInformation("is_recurring_subscription", false)
-            ->setAdditionalInformation("remove_initial_fee", true);
+        $quote->getPayment()->setAdditionalInformation("remove_initial_fee", true);
 
         // Collect Totals & Save Quote
         $quote->collectTotals();

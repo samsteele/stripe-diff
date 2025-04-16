@@ -49,6 +49,8 @@ class PlaceOrderTest extends \PHPUnit\Framework\TestCase
      * @magentoConfigFixture current_store currency/options/base USD
      * @magentoConfigFixture current_store currency/options/allow EUR,USD
      * @magentoConfigFixture current_store currency/options/default EUR
+     * @magentoConfigFixture current_store tax/calculation/algorithm ROW_BASE_CALCULATION
+     * @magentoDataFixture ../../../../app/code/StripeIntegration/Payments/Test/Integration/_files/Data/Discounts.php
      */
     public function testNormalCart()
     {
@@ -58,6 +60,7 @@ class PlaceOrderTest extends \PHPUnit\Framework\TestCase
             ->setShippingAddress("Berlin")
             ->setShippingMethod("FlatRate")
             ->setBillingAddress("Berlin")
+            ->setCouponCode("10_percent")
             ->setPaymentMethod("BankTransferAdmin");
 
         $this->paymentMethodBlock->getSavedPaymentMethods(); // Creates the customer object
@@ -68,7 +71,7 @@ class PlaceOrderTest extends \PHPUnit\Framework\TestCase
         $this->tests->compare($order->debug(), [
             "state" => "pending_payment",
             "status" => "pending_payment",
-            "grand_total" => 42.50,
+            "grand_total" => 39.10,
             "total_due" => 0,
             "total_invoiced" => $order->getGrandTotal()
         ]);
@@ -137,7 +140,7 @@ class PlaceOrderTest extends \PHPUnit\Framework\TestCase
         $this->tests->refundOnline($invoice, ['virtual-product' => 2, 'simple-product' => 2], $baseShipping = 10);
 
         $charge = $this->tests->stripe()->charges->retrieve($stripeInvoice->charge, []);
-        $this->assertEquals(4250, $charge->amount_refunded);
+        $this->assertEquals(3910, $charge->amount_refunded);
         $this->tests->event()->trigger("charge.refunded", $charge);
 
         // Check the order
@@ -147,7 +150,10 @@ class PlaceOrderTest extends \PHPUnit\Framework\TestCase
             "status" => "closed",
             "total_due" => 0,
             "total_paid" => $order->getGrandTotal(),
-            "total_refunded" => 42.50
+            "total_refunded" => 39.10
         ]);
+
+        // Create the payment info block for $order
+        $this->assertNotEmpty($this->tests->renderPaymentInfoBlock(\StripeIntegration\Payments\Block\PaymentInfo\BankTransfers::class, $order));
     }
 }

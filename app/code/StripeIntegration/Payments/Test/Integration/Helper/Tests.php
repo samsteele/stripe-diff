@@ -388,6 +388,29 @@ class Tests
         else if (!empty($response->setup_intent))
         {
             $this->event()->triggerEvent("checkout.session.completed", $response->session_id);
+
+            if ($response->state == "processing_subscription")
+            {
+                $maxAttempts = 6;
+                do
+                {
+                    $customer = $this->stripe()->customers->retrieve($response->customer->id, [
+                        'expand' => ['subscriptions']
+                    ]);
+
+                    if ($customer->subscriptions->total_count > 0)
+                    {
+                        $this->log("Subscription created");
+                    }
+                    else
+                    {
+                        $this->log("Waiting for subscription to be created");
+                        sleep(2);
+                    }
+                }
+                while ($customer->subscriptions->total_count == 0 && $maxAttempts-- > 0);
+            }
+
             return $response;
         }
         else
@@ -482,5 +505,13 @@ class Tests
     public function log($message)
     {
         $this->logger->log($message);
+    }
+
+    public function renderPaymentInfoBlock($blockClass, $order)
+    {
+        $block = $this->objectManager->create($blockClass);
+        $block->setOrder($order);
+        $block->setInfo($order->getPayment());
+        return $block->toHtml();
     }
 }

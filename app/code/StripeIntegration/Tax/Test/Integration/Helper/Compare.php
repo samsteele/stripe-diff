@@ -49,4 +49,15 @@ class Compare extends AbstractCompare
     {
         $this->compareItemData($quoteItem, $calculatedData, $entity);
     }
+
+    public function compareCreditmemoData($creditmemo, $calculatedData, $entity = 'Creditmemo')
+    {
+        $this->compareGeneralData($creditmemo, $calculatedData, $entity);
+        $this->getTest()->assertNotNull($creditmemo->getStripeTaxTransactionId());
+    }
+
+    public function compareCreditmemoItemData($quoteItem, $calculatedData, $entity = 'Creditmemo')
+    {
+        $this->compareItemData($quoteItem, $calculatedData, $entity);
+    }
 }

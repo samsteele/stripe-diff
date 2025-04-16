@@ -49,12 +49,7 @@ class CheckoutSessionCompleted
     {
         $order = $this->webhooksHelper->loadOrderFromEvent($arrEvent);
 
-        $quote = $this->quoteHelper->loadQuoteById($order->getQuoteId());
-        if ($quote && $quote->getIsActive())
-        {
-            $quote->setIsActive(false);
-            $this->quoteHelper->saveQuote($quote);
-        }
+        $this->quoteHelper->deactivateQuoteById($order->getQuoteId());
 
         // A subscription with a start date might have been purchased
         $this->processSubscriptionPhases($order, $object);

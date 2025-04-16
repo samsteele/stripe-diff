@@ -7,6 +7,9 @@ use StripeIntegration\Tax\Model\StripeTransactionReversal\Request\LineItems;
 use Magento\GiftWrapping\Model\Total\Creditmemo\Tax\Giftwrapping;
 use \Magento\Sales\Model\Order\Creditmemo;
 
+/**
+ * @codeCoverageIgnoreFile This is a class which will be used in Magento Enterprise installations.
+ */
 class GiftwrappingPlugin
 {
     private $lineItems;

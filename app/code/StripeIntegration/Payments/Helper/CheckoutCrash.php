@@ -77,8 +77,7 @@ class CheckoutCrash
     public function deactivateCart()
     {
         $quote = $this->quoteHelper->getQuote();
-        $quote->setIsActive(false);
-        $this->quoteHelper->saveQuote($quote);
+        $this->quoteHelper->deactivateQuote($quote);
 
         return $this;
     }

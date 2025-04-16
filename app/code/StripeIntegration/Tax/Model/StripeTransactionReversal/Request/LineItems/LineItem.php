@@ -85,6 +85,14 @@ class LineItem
         $this->quantity = $item->getQty();
     }
 
+    /**
+     * @codeCoverageIgnore Used in Magento Enterprise installations
+     * @param $item
+     * @param $orderItem
+     * @param $creditMemo
+     * @param $transaction
+     * @return void
+     */
     public function formItemGwData($item, $orderItem, $creditMemo, $transaction)
     {
         $amount = $this->giftOptionsHelper->getItemGiftOptionsAmount($orderItem, $creditMemo->getOrderCurrencyCode()) * $item->getQty();
@@ -96,6 +104,14 @@ class LineItem
         $this->processTransactionLineItem($transaction);
     }
 
+    /**
+     * @codeCoverageIgnore Used in Magento Enterprise installations
+     * @param $item
+     * @param $orderItem
+     * @param $creditMemo
+     * @param $transaction
+     * @return void
+     */
     public function formOfflineItemGwData($item, $orderItem, $creditMemo, $transaction)
     {
         $this->formItemGwData($item, $orderItem, $creditMemo, $transaction);
@@ -103,6 +119,12 @@ class LineItem
         $this->creditmemoHelper->updateAmountToRevert($creditMemo, $this->amount, $this->amountTax, $this->taxHelper->isProductAndPromotionTaxExclusive());
     }
 
+    /**
+     * @codeCoverageIgnore Used in Magento Enterprise installations
+     * @param $creditMemo
+     * @param $transaction
+     * @return void
+     */
     public function formOrderGwData($creditMemo, $transaction)
     {
         $amount = $this->giftOptionsHelper->getSalseObjectGiftOptionsAmount($creditMemo->getOrder(), $creditMemo->getOrderCurrencyCode());
@@ -114,6 +136,12 @@ class LineItem
         $this->processTransactionLineItem($transaction);
     }
 
+    /**
+     * @codeCoverageIgnore Used in Magento Enterprise installations
+     * @param $creditMemo
+     * @param $transaction
+     * @return void
+     */
     public function formOfflineOrderGwData($creditMemo, $transaction)
     {
         $this->formOrderGwData($creditMemo, $transaction);
@@ -121,6 +149,12 @@ class LineItem
         $this->creditmemoHelper->updateAmountToRevert($creditMemo, $this->amount, $this->amountTax, $this->taxHelper->isProductAndPromotionTaxExclusive());
     }
 
+    /**
+     * @codeCoverageIgnore Used in Magento Enterprise installations
+     * @param $creditMemo
+     * @param $transaction
+     * @return void
+     */
     public function formOrderPrintedCardData($creditMemo, $transaction)
     {
         $amount = $this->giftOptionsHelper->getSalesObjectPrintedCardAmount($creditMemo->getOrder(), $creditMemo->getOrderCurrencyCode());
@@ -132,6 +166,12 @@ class LineItem
         $this->processTransactionLineItem($transaction);
     }
 
+    /**
+     * @codeCoverageIgnore Used in Magento Enterprise installations
+     * @param $creditMemo
+     * @param $transaction
+     * @return void
+     */
     public function formOfflineOrderPrintedCardData($creditMemo, $transaction)
     {
         $this->formOrderPrintedCardData($creditMemo, $transaction);
@@ -204,63 +244,6 @@ class LineItem
     public function getReference()
     {
         return $this->reference;
-    }
-
-    private function getTransactionLineItemId($item, $creditMemo, $transactionLineItems)
-    {
-        $reference = $this->lineItemsHelper->getReferenceForInvoiceTax($item, $creditMemo->getOrder());
-        $lineItem = $this->lineItemsHelper->getLineItemByReference($reference, $transactionLineItems);
-
-        return $lineItem ? $lineItem->id : null;
-    }
-
-    private function getCreditmemoItemAdditionalFeeLineItemId($item, $creditMemo, $transactionLineItems, $code)
-    {
-        $reference = $this->lineItemsHelper->getReferenceForInvoiceAdditionalFee($item, $creditMemo->getOrder(), $code);
-        $lineItem = $this->lineItemsHelper->getLineItemByReference($reference, $transactionLineItems);
-
-        return $lineItem ? $lineItem->id : null;
-    }
-
-    private function getTransactionGwLineItemId($item, $creditMemo, $transactionLineItems)
-    {
-        $reference = $this->giftOptionsHelper->getItemGwReferenceForInvoiceTax($item, $creditMemo->getOrder());
-        $lineItem = $this->lineItemsHelper->getLineItemByReference($reference, $transactionLineItems);
-
-        return $lineItem ? $this->getIdFromLineItem($lineItem) : null;
-    }
-
-    private function getTransactionOrderGwLineItemId($creditMemo, $transactionLineItems)
-    {
-        $reference = $this->giftOptionsHelper->getSalesObjectGiftOptionsReference($creditMemo->getOrder());
-        $lineItem = $this->lineItemsHelper->getLineItemByReference($reference, $transactionLineItems);
-
-        return $lineItem ? $this->getIdFromLineItem($lineItem) : null;
-    }
-
-    private function getTransactionOrderPrintedCardLineItemId($creditMemo, $transactionLineItems)
-    {
-        $reference = $this->giftOptionsHelper->getSalesObjectPrintedCardReference($creditMemo->getOrder());
-        $lineItem = $this->lineItemsHelper->getLineItemByReference($reference, $transactionLineItems);
-
-        return $lineItem ? $this->getIdFromLineItem($lineItem) : null;
-    }
-
-    private function getCreditmemoAdditionalFeeLineItemId($creditMemo, $transactionLineItems, $code)
-    {
-        $reference = $this->lineItemsHelper->getSalesEntityAdditionalFeeReference($creditMemo->getOrder(), $code);
-        $lineItem = $this->lineItemsHelper->getLineItemByReference($reference, $transactionLineItems);
-
-        return $lineItem ? $this->getIdFromLineItem($lineItem) : null;
-    }
-
-    private function getIdFromLineItem($lineItem)
-    {
-        if (is_array($lineItem)) {
-            return $lineItem['id'];
-        } else {
-            return $lineItem->id;
-        }
     }
 
     private function processTransactionLineItem($transaction)

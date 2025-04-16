@@ -15,7 +15,6 @@
         <element name="paymentElementAccordionButtonIdeal" type="button" selector="//div[contains(@class, 'p-AccordionButton') and @data-value='ideal']" />
         <element name="paymentElementAccordionButtonP24" type="button" selector="//div[contains(@class, 'p-AccordionButton') and @data-value='p24']" />
         <element name="paymentElementAccordionButtonPaypal" type="button" selector="//div[contains(@class, 'p-AccordionButton') and @data-value='paypal']" />
-        <element name="paymentElementAccordionButtonSofort" type="button" selector="//div[contains(@class, 'p-AccordionButton') and @data-value='sofort']" />
         <element name="paymentElementAccordionButtonOxxo" type="button" selector="//div[contains(@class, 'p-AccordionButton') and @data-value='oxxo']" />
         <element name="paymentElementAccordionButtonAfterpay" type="button" selector="//div[contains(@class, 'p-AccordionButton') and @data-value='afterpay_clearpay']" />
         <element name="paymentElementAccordionButtonBacsDebit" type="button" selector="//div[contains(@class, 'p-AccordionButton') and @data-value='bacs_debit']" />
@@ -40,7 +39,6 @@
         <element name="sepaPaymentMethodTabId" type="button" selector="#sepa_debit-tab" />
         <element name="ibanField" type="input" selector="//input[@name='iban']" />
         <element name="banContactPaymentMethodTabId" type="button" selector="#bancontact-tab" />
-        <element name="sofortPaymentMethodTabId" type="button" selector="#sofort-tab" />
         <element name="klarnaPaymentMethodTabId" type="button" selector="#klarna-tab" />
         <element name="additionalPaymentBox" type="text" selector="div.p-AdditionalPaymentMethods" />
         <element name="additionalPaymentSelectBox" type="text" selector="select.p-AdditionalPaymentMethods-menu" />

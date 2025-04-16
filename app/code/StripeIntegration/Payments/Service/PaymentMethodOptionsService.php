@@ -144,7 +144,6 @@ class PaymentMethodOptionsService implements PaymentMethodOptionsServiceInterfac
                 case "ideal":
                 case "paypal":
                 case "sepa_debit":
-                case "sofort":
                 case "us_bank_account":
                     $camelCaseCode = $this->snakeCaseToCamelCase($code);
                     $terms[$camelCaseCode] = "always";

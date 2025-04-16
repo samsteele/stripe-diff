@@ -50,15 +50,15 @@ class BundleProductDynamicTaxExclusiveTest extends \PHPUnit\Framework\TestCase
         $calculatedData = $this->calculator->calculateQuoteData(160, 2, 5, $taxBehaviour);
         $this->compare->compareQuoteData($this->quote->getQuote(), $calculatedData);
 
-        $parentQuoteItem = $this->quote->getQuoteItem('bundle-dynamic-simple-product-bundle-1-simple-product-bundle-3');
+        $parentQuoteItem = $this->quote->getQuoteItem('tax-bundle-dynamic-tax-simple-product-bundle-1-tax-simple-product-bundle-3');
         $parentQuoteItemData = $this->calculator->calculateQuoteItemData(160, 10, 2, $taxBehaviour);
         $this->compare->compareQuoteItemData($parentQuoteItem, $parentQuoteItemData);
 
-        $childItem1 = $this->quote->getQuoteItem('simple-product-bundle-1');
+        $childItem1 = $this->quote->getQuoteItem('tax-simple-product-bundle-1');
         $quoteItemData = $this->calculator->calculateQuoteItemData(30, 0, 4, $taxBehaviour);
         $this->compare->compareQuoteItemData($childItem1, $quoteItemData);
 
-        $childItem2 = $this->quote->getQuoteItem('simple-product-bundle-3');
+        $childItem2 = $this->quote->getQuoteItem('tax-simple-product-bundle-3');
         $quoteItemData = $this->calculator->calculateQuoteItemData(50, 0, 4, $taxBehaviour);
         $this->compare->compareQuoteItemData($childItem2, $quoteItemData);
 
@@ -67,20 +67,20 @@ class BundleProductDynamicTaxExclusiveTest extends \PHPUnit\Framework\TestCase
         $order = $this->orderHelper->refreshOrder($order);
         $this->compare->compareOrderData($order, $calculatedData);
 
-        $orderItem = $this->orderHelper->getOrderItem($order, 'bundle-dynamic-simple-product-bundle-1-simple-product-bundle-3');
+        $orderItem = $this->orderHelper->getOrderItem($order, 'tax-bundle-dynamic-tax-simple-product-bundle-1-tax-simple-product-bundle-3');
         $this->compare->compareOrderItemData($orderItem, $parentQuoteItemData);
 
-        $childItem1 = $this->orderHelper->getOrderItem($order, 'simple-product-bundle-1');
+        $childItem1 = $this->orderHelper->getOrderItem($order, 'tax-simple-product-bundle-1');
         $invoiceItemData = $this->calculator->calculateItemData(30, 0, 4, $taxBehaviour);
         $this->compare->compareQuoteItemData($childItem1, $invoiceItemData);
 
-        $childItem2 = $this->orderHelper->getOrderItem($order, 'simple-product-bundle-3');
+        $childItem2 = $this->orderHelper->getOrderItem($order, 'tax-simple-product-bundle-3');
         $invoiceItemData = $this->calculator->calculateQuoteItemData(50, 0, 4, $taxBehaviour);
         $this->compare->compareQuoteItemData($childItem2, $invoiceItemData);
 
         // Create invoice and compare data
         \Magento\TestFramework\Helper\Bootstrap::getInstance()->loadArea('adminhtml');
-        $this->tests->invoiceOnline($order, ['bundle-dynamic-simple-product-bundle-1-simple-product-bundle-3' => 1]);
+        $this->tests->invoiceOnline($order, ['tax-bundle-dynamic-tax-simple-product-bundle-1-tax-simple-product-bundle-3' => 1]);
         $order = $this->orderHelper->refreshOrder($order);
         $invoicesCollection = $order->getInvoiceCollection();
         $this->assertEquals(1, $invoicesCollection->getSize());
@@ -88,10 +88,10 @@ class BundleProductDynamicTaxExclusiveTest extends \PHPUnit\Framework\TestCase
         $calculatedData = $this->calculator->calculateData(160, 1, 10, $taxBehaviour);
         $this->compare->compareInvoiceData($invoice, $calculatedData);
         $invoiceItemData = $this->calculator->calculateItemData(30, 10, 2, $taxBehaviour);
-        $invoiceItem = $this->invoiceHelper->getInvoiceItem($invoice, 'simple-product-bundle-1');
+        $invoiceItem = $this->invoiceHelper->getInvoiceItem($invoice, 'tax-simple-product-bundle-1');
         $this->compare->compareInvoiceItemData($invoiceItem, $invoiceItemData);
         $invoiceItemData2 = $this->calculator->calculateItemData(50, 10, 2, $taxBehaviour);
-        $invoiceItem2 = $this->invoiceHelper->getInvoiceItem($invoice, 'simple-product-bundle-3');
+        $invoiceItem2 = $this->invoiceHelper->getInvoiceItem($invoice, 'tax-simple-product-bundle-3');
         $this->compare->compareInvoiceItemData($invoiceItem2, $invoiceItemData2);
         $shippingData = $this->calculator->calculateShippingData(160, 10, 1, $taxBehaviour);
 
@@ -99,7 +99,7 @@ class BundleProductDynamicTaxExclusiveTest extends \PHPUnit\Framework\TestCase
         $expectedInvoicedTotal = $invoiceItemData['row_total_incl_tax'] + $invoiceItemData2['row_total_incl_tax'] + $shippingData['shipping_incl_tax'];
         $this->assertEquals($expectedInvoicedTotal, $order->getTotalInvoiced());
 
-        $this->tests->invoiceOnline($order, ['bundle-dynamic-simple-product-bundle-1-simple-product-bundle-3' => 1]);
+        $this->tests->invoiceOnline($order, ['tax-bundle-dynamic-tax-simple-product-bundle-1-tax-simple-product-bundle-3' => 1]);
         $order = $this->orderHelper->refreshOrder($order);
         $invoicesCollection = $order->getInvoiceCollection();
         $this->assertEquals(2, $invoicesCollection->getSize());
@@ -107,10 +107,10 @@ class BundleProductDynamicTaxExclusiveTest extends \PHPUnit\Framework\TestCase
         $calculatedData = $this->calculator->calculateData(160, 1, 0, $taxBehaviour);
         $this->compare->compareInvoiceData($invoice, $calculatedData);
         $invoiceItemData = $this->calculator->calculateItemData(30, 0, 2, $taxBehaviour);
-        $invoiceItem = $this->invoiceHelper->getInvoiceItem($invoice, 'simple-product-bundle-1');
+        $invoiceItem = $this->invoiceHelper->getInvoiceItem($invoice, 'tax-simple-product-bundle-1');
         $this->compare->compareInvoiceItemData($invoiceItem, $invoiceItemData);
         $invoiceItemData2 = $this->calculator->calculateItemData(50, 0, 2, $taxBehaviour);
-        $invoiceItem2 = $this->invoiceHelper->getInvoiceItem($invoice, 'simple-product-bundle-3');
+        $invoiceItem2 = $this->invoiceHelper->getInvoiceItem($invoice, 'tax-simple-product-bundle-3');
         $this->compare->compareInvoiceItemData($invoiceItem2, $invoiceItemData2);
 
         $this->assertEquals($order->getGrandTotal(), $order->getTotalInvoiced());

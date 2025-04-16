@@ -195,10 +195,12 @@ class Service implements ServiceInterface
             $response = $this->eceResponseFactory->create(['location' => $location])->fromNewShippingAddress($newAddress);
             return $response->serialize();
         }
+        // @codeCoverageIgnoreStart
         catch (\Exception $e)
         {
             throw new CouldNotSaveException(__($e->getMessage()), $e);
         }
+        // @codeCoverageIgnoreEnd
     }
 
     /**
@@ -216,9 +218,13 @@ class Service implements ServiceInterface
         try {
             $response = $this->eceResponseFactory->create()->fromNewShippingRate($address, $shipping_id);
             return $response->serialize();
-        } catch (\Exception $e) {
+        }
+        // @codeCoverageIgnoreStart
+        catch (\Exception $e)
+        {
             throw new CouldNotSaveException(__($e->getMessage()), $e);
         }
+        // @codeCoverageIgnoreEnd
     }
 
     /**
@@ -405,10 +411,12 @@ class Service implements ServiceInterface
                 'redirect' => $this->urlBuilder->getUrl('checkout/onepage/success', ['_secure' => $this->paymentsHelper->isSecure()])
             ]);
         }
+        // @codeCoverageIgnoreStart
         catch (\Exception $e)
         {
             return $this->paymentsHelper->throwError($e->getMessage(), $e);
         }
+        // @codeCoverageIgnoreEnd
     }
 
     private function adjustNestedFields(&$params)
@@ -497,10 +505,12 @@ class Service implements ServiceInterface
 
             return $this->serializer->serialize([]);
         }
+        // @codeCoverageIgnoreStart
         catch (\Exception $e)
         {
             throw new CouldNotSaveException(__($e->getMessage()), $e);
         }
+        // @codeCoverageIgnoreEnd
     }
 
     public function ece_params($location, $productId = null, $attribute = null)
@@ -646,11 +656,13 @@ class Service implements ServiceInterface
             return $session->id;
 
         }
+        // @codeCoverageIgnoreStart
         catch (\Exception $e)
         {
             $this->paymentsHelper->logError($e->getMessage(), $e->getTraceAsString());
             throw new CouldNotSaveException(__($e->getMessage()), $e);
         }
+        // @codeCoverageIgnoreEnd
     }
 
     /**
@@ -667,12 +679,14 @@ class Service implements ServiceInterface
             $this->restoreQuote();
             return $this->serializer->serialize([]);
         }
+        // @codeCoverageIgnoreStart
         catch (\Exception $e)
         {
             return $this->serializer->serialize([
                 "error" => $e->getMessage()
             ]);
         }
+        // @codeCoverageIgnoreEnd
     }
 
     private function restoreQuote()
@@ -699,10 +713,12 @@ class Service implements ServiceInterface
             $this->checkoutSession->replaceQuote($quote)->setLastRealOrderId($lastRealOrderId);
             return true;
         }
+        // @codeCoverageIgnoreStart
         catch (\Magento\Framework\Exception\NoSuchEntityException $e)
         {
             return false;
         }
+        // @codeCoverageIgnoreEnd
     }
 
     /**
@@ -894,17 +910,20 @@ class Service implements ServiceInterface
                     $this->paymentElement->confirm($order);
                 }
             }
+            // @codeCoverageIgnoreStart
             catch (\Exception $e)
             {
                 return $this->serializer->serialize([
                     "error" => $e->getMessage()
                 ]);
             }
+            // @codeCoverageIgnoreEnd
 
             return $this->serializer->serialize([
                 "placeNewOrder" => false
             ]);
         }
+        // @codeCoverageIgnoreStart
         catch (\Exception $e)
         {
             $this->paymentsHelper->logError($e->getMessage(), $e->getTraceAsString());
@@ -914,6 +933,7 @@ class Service implements ServiceInterface
                 "reason" => "An error has occurred: " . $e->getMessage()
             ]);
         }
+        // @codeCoverageIgnoreEnd
     }
 
     /**
@@ -1009,11 +1029,13 @@ class Service implements ServiceInterface
         {
             return $this->serializer->serialize(["authenticate" => $e->getMessage()]);
         }
+        // @codeCoverageIgnoreStart
         catch (\Exception $e)
         {
             $this->paymentsHelper->logError($e->getMessage(), $e->getTraceAsString());
             return $this->serializer->serialize(["error" => $e->getMessage()]);
         }
+        // @codeCoverageIgnoreEnd
     }
 
     /**
@@ -1037,11 +1059,13 @@ class Service implements ServiceInterface
             $redirectUrl = $this->multishippingHelper->finalizeOrder($quoteId, $error);
             return $this->serializer->serialize(["redirect" => $redirectUrl]);
         }
+        // @codeCoverageIgnoreStart
         catch (\Exception $e)
         {
             $this->paymentsHelper->logError($e->getMessage(), $e->getTraceAsString());
             return $this->serializer->serialize(["error" => $e->getMessage()]);
         }
+        // @codeCoverageIgnoreEnd
     }
 
     private function getAddressComparisonData($addressData)
@@ -1101,11 +1125,13 @@ class Service implements ServiceInterface
 
             return $this->serializer->serialize(["error" => $e->getMessage()]);
         }
+        // @codeCoverageIgnoreStart
         catch (\Exception $e)
         {
             $this->paymentsHelper->logError($e->getMessage(), $e->getTraceAsString());
             return $this->serializer->serialize(["error" => $e->getMessage()]);
         }
+        // @codeCoverageIgnoreEnd
     }
 
     /**
@@ -1145,6 +1171,7 @@ class Service implements ServiceInterface
 
             return $this->serializer->serialize($method);
         }
+        // @codeCoverageIgnoreStart
         catch (StripeInvalidRequestException|GenericException $e)
         {
             throw new CouldNotSaveException(__($e->getMessage()), $e);
@@ -1153,6 +1180,7 @@ class Service implements ServiceInterface
         {
             throw new GenericException((string)__("Could not add payment method: %1.", $e->getMessage()));
         }
+        // @codeCoverageIgnoreEnd
     }
 
     /**
@@ -1184,10 +1212,12 @@ class Service implements ServiceInterface
 
             return $this->serializer->serialize(__("The payment method has been deleted."));
         }
+        // @codeCoverageIgnoreStart
         catch (\Exception $e)
         {
             throw new CouldNotSaveException(__($e->getMessage()), $e);
         }
+        // @codeCoverageIgnoreEnd
     }
 
     /**

@@ -351,16 +351,6 @@ class Checkout extends \Magento\Payment\Block\ConfigurableInfo
         return null;
     }
 
-    public function getCard()
-    {
-        $method = $this->getPaymentMethod();
-
-        if (!empty($method->card))
-            return $method->card;
-
-        return null;
-    }
-
     public function getRiskLevelCode()
     {
         $charge = $this->getCharge();
@@ -385,16 +375,6 @@ class Checkout extends \Magento\Payment\Block\ConfigurableInfo
     {
         $risk = $this->getRiskLevelCode();
         return ucfirst(str_replace("_", " ", $risk));
-    }
-
-    public function isStripeMethod()
-    {
-        $method = $this->getMethod()->getMethod();
-
-        if (strpos($method, "stripe_payments") !== 0 || $method == "stripe_payments_invoice")
-            return false;
-
-        return true;
     }
 
     public function getCharge()

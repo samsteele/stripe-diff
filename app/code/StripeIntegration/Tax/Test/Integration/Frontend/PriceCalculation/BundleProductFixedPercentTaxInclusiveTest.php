@@ -43,7 +43,7 @@ class BundleProductFixedPercentTaxInclusiveTest extends \PHPUnit\Framework\TestC
         $quoteData = $this->calculator->calculateQuoteData(110, 2, 5, $taxBehaviour);
         $this->compare->compareQuoteData($this->quote->getQuote(), $quoteData);
 
-        $parentQuoteItem = $this->quote->getQuoteItem('bundle-fixed-percent-simple-product-bundle-2-simple-product-bundle-4');
+        $parentQuoteItem = $this->quote->getQuoteItem('tax-bundle-fixed-percent-tax-simple-product-bundle-2-tax-simple-product-bundle-4');
         $parentQuoteItemData = $this->calculator->calculateQuoteItemData(110, 10, 2, $taxBehaviour);
         $this->compare->compareQuoteItemData($parentQuoteItem, $parentQuoteItemData);
     }

@@ -38,4 +38,11 @@ class Order
     {
         return $this->orderRepository->save($order);
     }
+
+    public function changeStatus($order, $state, $status)
+    {
+        $order->setState($state)->setStatus($status);
+
+        return $this->saveOrder($order);
+    }
 }

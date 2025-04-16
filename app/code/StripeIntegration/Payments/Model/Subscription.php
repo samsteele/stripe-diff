@@ -46,8 +46,8 @@ class Subscription extends \Magento\Framework\Model\AbstractModel
         \Magento\Customer\Model\Session $session,
         \Magento\Framework\Model\Context $context,
         \Magento\Framework\Registry $registry,
-        \Magento\Framework\Model\ResourceModel\AbstractResource $resource = null,
-        \Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null,
+        ?\Magento\Framework\Model\ResourceModel\AbstractResource $resource = null,
+        ?\Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null,
         array $data = []
     ) {
         $this->config = $config;
@@ -312,11 +312,8 @@ class Subscription extends \Magento\Framework\Model\AbstractModel
             if (!$order)
                 throw new LocalizedException(__("Could not load order for this subscription."));
 
-            $quote = $this->quoteHelper->getQuote();
-            $quote->removeAllItems();
-            $quote->removeAllAddresses();
-            $extensionAttributes = $quote->getExtensionAttributes();
-            $extensionAttributes->setShippingAssignments([]);
+            $this->quoteHelper->deactivateCurrentQuote();
+            $quote = $this->quoteHelper->createFreshQuote();
 
             $productIds = $this->subscriptionsHelper->getSubscriptionProductIDs($subscription);
             $items = $order->getItemsCollection();

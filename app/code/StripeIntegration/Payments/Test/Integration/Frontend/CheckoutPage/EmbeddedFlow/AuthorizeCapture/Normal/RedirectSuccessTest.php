@@ -38,7 +38,7 @@ class RedirectSuccessTest extends \PHPUnit\Framework\TestCase
             ->setShippingAddress("Berlin")
             ->setShippingMethod("FlatRate")
             ->setBillingAddress("Berlin")
-            ->setPaymentMethod("SOFORT");
+            ->setPaymentMethod("RedirectBasedMethod");
 
         $order = $this->quote->placeOrder();
 

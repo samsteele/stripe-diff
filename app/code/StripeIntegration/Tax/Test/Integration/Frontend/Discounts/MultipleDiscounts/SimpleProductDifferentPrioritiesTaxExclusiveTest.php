@@ -47,7 +47,7 @@ class SimpleProductDifferentPrioritiesTaxExclusiveTest extends \PHPUnit\Framewor
         $quoteData = $this->calculator->calculateQuoteData(72, 2, 5, $taxBehaviour);
         $this->compare->compareQuoteData($this->quote->getQuote(), $quoteData);
 
-        $quoteItem = $this->quote->getQuoteItem('simple-product');
+        $quoteItem = $this->quote->getQuoteItem('tax-simple-product');
         $quoteItemData = $this->calculator->calculateQuoteItemData(100, 72, 10, 2, $taxBehaviour);
         $this->compare->compareQuoteItemData($quoteItem, $quoteItemData);
     }

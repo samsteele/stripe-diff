@@ -9,7 +9,7 @@ use StripeIntegration\Payments\Exception\GenericException;
 class Config
 {
     public static $moduleName           = "Magento2";
-    public static $moduleVersion        = "4.4.1";
+    public static $moduleVersion        = "4.4.2";
     public static $minStripePHPVersion  = "14.10.0";
     public static $moduleUrl            = "https://stripe.com/docs/plugins/magento";
     public static $partnerId            = "pp_partner_Fs67gT2M6v3mH7";
@@ -542,6 +542,13 @@ class Config
             $this->quoteHelper->hasSubscriptions() ||
             ($this->isAuthorizeOnly() && $this->retryWithSavedCard()) ||
             $this->quoteHelper->isMultiShipping() ||
+            $this->getPaymentAction() == "order");
+    }
+
+    public function displayMyPaymentMethodsLink()
+    {
+        return ($this->getSavePaymentMethod() ||
+            ($this->isAuthorizeOnly() && $this->retryWithSavedCard()) ||
             $this->getPaymentAction() == "order");
     }
 

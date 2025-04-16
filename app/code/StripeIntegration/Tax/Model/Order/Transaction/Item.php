@@ -63,6 +63,12 @@ class Item
         return $this;
     }
 
+    /**
+     * @codeCoverageIgnore Used in Magento Enterprise installations
+     * @param $invoiceItem
+     * @param $lineItem
+     * @return $this
+     */
     public function prepareItemGW($invoiceItem, $lineItem)
     {
         $this->setCommonFields($lineItem);
@@ -73,6 +79,12 @@ class Item
         return $this;
     }
 
+    /**
+     * @codeCoverageIgnore Used in Magento Enterprise installations
+     * @param $object
+     * @param $lineItem
+     * @return $this
+     */
     public function prepareSalesObjectGW($object, $lineItem)
     {
         $this->setCommonFields($lineItem);
@@ -83,6 +95,12 @@ class Item
         return $this;
     }
 
+    /**
+     * @codeCoverageIgnore Used in Magento Enterprise installations
+     * @param $object
+     * @param $lineItem
+     * @return $this
+     */
     public function preparePrintedCard($object, $lineItem)
     {
         $this->setCommonFields($lineItem);
@@ -135,6 +153,11 @@ class Item
         return $this;
     }
 
+    /**
+     * @codeCoverageIgnore Used in Magento Enterprise installations
+     * @param $invoiceItem
+     * @return $this
+     */
     public function setItemGwBaseCurrencyPrices($invoiceItem)
     {
         $this->unitPrice = $invoiceItem->getOrderItem()->getGwBasePrice();
@@ -142,6 +165,11 @@ class Item
         return $this;
     }
 
+    /**
+     * @codeCoverageIgnore Used in Magento Enterprise installations
+     * @param $object
+     * @return $this
+     */
     public function setSalesObjectGwBaseCurrencyPrices($object)
     {
         $this->unitPrice = $object->getGwBasePrice();
@@ -149,6 +177,11 @@ class Item
         return $this;
     }
 
+    /**
+     * @codeCoverageIgnore Used in Magento Enterprise installations
+     * @param $object
+     * @return $this
+     */
     public function setPrintedCardBaseCurrencyPrices($object)
     {
         $this->unitPrice = $object->getGwCardBasePrice();

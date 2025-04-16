@@ -47,6 +47,12 @@ class LineItem
         return $this;
     }
 
+    /**
+     * @codeCoverageIgnore Used in Magento Enterprise installations
+     * @param $item
+     * @param $currency
+     * @return $this
+     */
     public function formItemGiftOptionsData($item, $currency)
     {
         $this->setGiftOptionsCommonFields();
@@ -57,6 +63,12 @@ class LineItem
         return $this;
     }
 
+    /**
+     * @codeCoverageIgnore Used in Magento Enterprise installations
+     * @param $object
+     * @param $currency
+     * @return $this
+     */
     public function formSalesObjectGiftOptionsData($object, $currency)
     {
         $this->setGiftOptionsCommonFields();
@@ -66,6 +78,12 @@ class LineItem
         return $this;
     }
 
+    /**
+     * @codeCoverageIgnore Used in Magento Enterprise installations
+     * @param $object
+     * @param $currency
+     * @return $this
+     */
     public function formSalesObjectPrintedCardData($object, $currency)
     {
         $this->setGiftOptionsCommonFields();
@@ -75,6 +93,10 @@ class LineItem
         return $this;
     }
 
+    /**
+     * @codeCoverageIgnore Used in Magento Enterprise installations
+     * @return $this
+     */
     private function setGiftOptionsCommonFields()
     {
         $this->taxCode = $this->giftOptionsHelper->getGiftOptionsTaxCode();

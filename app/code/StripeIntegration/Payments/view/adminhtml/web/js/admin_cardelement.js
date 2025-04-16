@@ -1,6 +1,7 @@
 var billingDetails = null;
 var cardElement = null;
 var params = null;
+var initializedElement = null;
 
 var getBillingDetails = function()
 {
@@ -177,6 +178,22 @@ function(stripe, $, $t)
         return stripe[0].checked;
     };
 
+    var getCardElementParams = function()
+    {
+        var cardElement = document.getElementById('stripe-card-element');
+        var encodedParams = cardElement.getAttribute('data-init-params');
+
+        try
+        {
+            var decodedParams = JSON.parse(encodedParams);
+            return JSON.parse(decodedParams);
+        }
+        catch (e)
+        {
+            return null;
+        }
+    };
+
     var initCardElement = function(params)
     {
         // Check if #stripe-card-element is already present
@@ -201,6 +218,8 @@ function(stripe, $, $t)
         cardElement = elements.create('card', params.cardElementOptions);
         cardElement.mount('#stripe-card-element');
         cardElement.on('change', onCardElementChange);
+
+        initializedElement = document.getElementById('stripe-card-element');
     };
 
     var bindOrderSubmit = function()
@@ -220,6 +239,11 @@ function(stripe, $, $t)
 
     var init = function()
     {
+        if (getCardElementParams())
+        {
+            params = getCardElementParams();
+        }
+
         disableCardValidation();
         bindOrderSubmit();
 
@@ -242,31 +266,39 @@ function(stripe, $, $t)
     {
         params = config;
 
-        // If #order-billing_method_form is already fully rendered, call init
-        if (document.getElementById('order-billing_method_form'))
+        // Check if element is already in DOM and visible
+        if (document.getElementById('stripe-card-element'))
         {
             init();
         }
 
-        // When #order-billing_method is re-added to the DOM, call init()
-        var observer = new MutationObserver(function(mutations)
-        {
-            mutations.forEach(function(mutation)
-            {
-                if (mutation.addedNodes && mutation.addedNodes.length > 0)
-                {
-                    mutation.addedNodes.forEach(function(node)
-                    {
-                        if (node.id == 'order-billing_method_form')
-                        {
+        var mutationObserver = new MutationObserver(function(mutations) {
+            mutations.forEach(function(mutation) {
+                // Check for added nodes
+                if (mutation.addedNodes && mutation.addedNodes.length > 0) {
+                    // Check if card element was directly added
+                    for (var i = 0; i < mutation.addedNodes.length; i++) {
+                        var node = mutation.addedNodes[i];
+                        // Check if the node itself is the element
+                        if (node.id === 'stripe-card-element' && initializedElement != node) {
                             init();
+                            return;
                         }
-                    });
+
+                        // Check if it's an element node that might contain our target
+                        if (node.nodeType === 1) {
+                            var cardElement = node.querySelector('#stripe-card-element');
+                            if (cardElement && initializedElement != cardElement) {
+                                init();
+                                return;
+                            }
+                        }
+                    }
                 }
             });
         });
 
-        observer.observe(document.body, { childList: true, subtree: true });
+        mutationObserver.observe(document.body, { childList: true, subtree: true });
 
         return config;
     };

@@ -25,8 +25,8 @@ class WebhookEvent extends \Magento\Framework\Model\AbstractModel
         \StripeIntegration\Payments\Model\ResourceModel\WebhookEvent $resourceModel,
         \Magento\Framework\Model\Context $context,
         \Magento\Framework\Registry $registry,
-        \Magento\Framework\Model\ResourceModel\AbstractResource $resource = null,
-        \Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null,
+        ?\Magento\Framework\Model\ResourceModel\AbstractResource $resource = null,
+        ?\Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null,
         array $data = []
     ) {
         $this->orderHelper = $orderHelper;

@@ -11,10 +11,10 @@ use StripeIntegration\Tax\Helper\Store;
 class Config
 {
     public const MODULE_NAME            = "Magento2-Tax";
-    public const MODULE_VERSION         = "1.1.0";
+    public const MODULE_VERSION         = "1.1.1";
     private const MODULE_URL            = "https://docs.stripe.com/connectors/adobe-commerce/tax";
     private const PARTNER_ID            = "pp_partner_Fs67gT2M6v3mH7";
-    private const STRIPE_API            = "2023-10-16";
+    private const STRIPE_API            = "2024-10-28.acacia";
     private const STATUS_ACTIVE         = 'active';
     private $isInitialized;
     private $stripeClient = null;

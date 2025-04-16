@@ -311,6 +311,7 @@ class Tax
      * Sets calculated values for the Gift Wrapping options for items which will be sent forward to be set in the
      * tax calculation collector of the module
      *
+     * @codeCoverageIgnore Used in Magento Enterprise installations
      * @param $response
      * @param $item
      * @param $invoice
@@ -333,6 +334,7 @@ class Tax
      * Sets calculated values for the Gift Wrapping options invoice which will be sent forward to be set in the
      * tax calculation collector of the module
      *
+     * @codeCoverageIgnore Used in Magento Enterprise installations
      * @param $response
      * @param $order
      * @param $invoice
@@ -355,6 +357,7 @@ class Tax
      * Sets calculated values for the Gift Wrapping printed card options invoice which will be sent forward to be
      * set in the tax calculation collector of the module
      *
+     * @codeCoverageIgnore Used in Magento Enterprise installations
      * @param $response
      * @param $order
      * @param $invoice

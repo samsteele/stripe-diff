@@ -39,7 +39,7 @@ class Patch005ExtensionAttributes
         ScopeConfigInterface $scopeConfig,
         SubscriptionOptionsFactory $subscriptionOptionsFactory,
         EavSetupFactory $eavSetupFactory,
-        \Magento\Catalog\Model\ResourceModel\Product\CollectionFactory $productCollectionFactory = null
+        ?CollectionFactory $productCollectionFactory = null
     ) {
         $this->areaCode = $areaCode;
         $this->moduleDataSetup = $moduleDataSetup;

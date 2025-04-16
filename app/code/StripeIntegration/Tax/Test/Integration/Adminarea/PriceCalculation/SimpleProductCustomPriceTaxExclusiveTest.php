@@ -36,7 +36,7 @@ class SimpleProductCustomPriceTaxExclusiveTest extends \PHPUnit\Framework\TestCa
             ->setCustomer('LoggedIn')
             ->setCart("Normal");
 
-        $quoteItem = $this->quote->getQuoteItem('simple-product');
+        $quoteItem = $this->quote->getQuoteItem('tax-simple-product');
         $quoteItem->setCustomPrice(150);
         $quoteItem->setOriginalCustomPrice(150);
         $quoteItem->getProduct()->setIsSuperMode(true);
@@ -49,7 +49,7 @@ class SimpleProductCustomPriceTaxExclusiveTest extends \PHPUnit\Framework\TestCa
         $quoteData = $this->calculator->calculateQuoteData(150, 2, 5, $taxBehaviour);
         $this->compare->compareQuoteData($this->quote->getQuote(), $quoteData);
 
-        $quoteItem = $this->quote->getQuoteItem('simple-product');
+        $quoteItem = $this->quote->getQuoteItem('tax-simple-product');
         $quoteItemData = $this->calculator->calculateQuoteItemData(150, 10, 2, $taxBehaviour);
         $this->compare->compareQuoteItemData($quoteItem, $quoteItemData);
     }

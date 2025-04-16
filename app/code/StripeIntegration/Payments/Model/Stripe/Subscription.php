@@ -3,7 +3,6 @@
 namespace StripeIntegration\Payments\Model\Stripe;
 
 use Magento\Framework\Exception\LocalizedException;
-use StripeIntegration\Payments\Helper\Data as DataHelper;
 use StripeIntegration\Payments\Exception\GenericException;
 
 class Subscription

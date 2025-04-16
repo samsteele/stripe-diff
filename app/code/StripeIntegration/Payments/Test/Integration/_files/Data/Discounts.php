@@ -82,7 +82,7 @@ $coupon->setCode('10_percent_apply_once')
 $couponRepository = $objectManager->get(CouponRepositoryInterface::class);
 $coupon = $couponRepository->save($coupon);
 
-//Save custom data to stripe table.
+// Save custom data to stripe table.
 $stripeCoupon = $objectManager->create(\StripeIntegration\Payments\Model\Coupon::class);
 $stripeCoupon->setCouponDuration('once');
 $stripeCoupon->setCouponMonths(0);
@@ -115,7 +115,7 @@ $coupon->setCode('10_percent_for_3months')
 $couponRepository = $objectManager->get(CouponRepositoryInterface::class);
 $coupon = $couponRepository->save($coupon);
 
-//Save custom data to stripe table.
+// Save custom data to stripe table.
 $stripeCoupon = $objectManager->create(\StripeIntegration\Payments\Model\Coupon::class);
 $stripeCoupon->setCouponDuration('months');
 $stripeCoupon->setCouponMonths(3);
@@ -147,3 +147,62 @@ $shippingCoupon->setCode('10_percent_shipping')
 
 $shippingCouponRepository = $objectManager->get(CouponRepositoryInterface::class);
 $shippingCoupon = $shippingCouponRepository->save($shippingCoupon);
+
+// 100% discount - apply once
+
+/** @var RuleInterface $rule */
+$rule = $objectManager->create(RuleInterface::class);
+$rule->setName('100% discount - apply once')
+    ->setIsAdvanced(true)
+    ->setStopRulesProcessing(false)
+    ->setDiscountQty(0)
+    ->setCustomerGroupIds([0])
+    ->setWebsiteIds([1])
+    ->setCouponType(RuleInterface::COUPON_TYPE_SPECIFIC_COUPON)
+    ->setSimpleAction(RuleInterface::DISCOUNT_ACTION_BY_PERCENT)
+    ->setDiscountAmount(100)
+    ->setIsActive(true);
+
+$ruleRepository = $objectManager->get(RuleRepositoryInterface::class);
+$rule = $ruleRepository->save($rule);
+
+$coupon = $objectManager->create(CouponInterface::class);
+$coupon->setCode('100_percent_once')
+    ->setUsagePerCustomer(1)
+    ->setRuleId($rule->getRuleId());
+
+$couponRepository = $objectManager->get(CouponRepositoryInterface::class);
+$coupon = $couponRepository->save($coupon);
+
+// Save custom data to stripe table.
+$stripeCoupon = $objectManager->create(\StripeIntegration\Payments\Model\Coupon::class);
+$stripeCoupon->setCouponDuration('once');
+$stripeCoupon->setCouponMonths(0);
+$stripeCoupon->setRuleId($rule->getRuleId());
+$stripeCoupon->save();
+
+// 100% discount - apply forever
+
+/** @var RuleInterface $rule */
+$rule = $objectManager->create(RuleInterface::class);
+$rule->setName('100% discount - apply forever')
+    ->setIsAdvanced(true)
+    ->setStopRulesProcessing(false)
+    ->setDiscountQty(10)
+    ->setCustomerGroupIds([0])
+    ->setWebsiteIds([1])
+    ->setCouponType(RuleInterface::COUPON_TYPE_SPECIFIC_COUPON)
+    ->setSimpleAction(RuleInterface::DISCOUNT_ACTION_BY_PERCENT)
+    ->setDiscountAmount(100)
+    ->setIsActive(true);
+
+$ruleRepository = $objectManager->get(RuleRepositoryInterface::class);
+$rule = $ruleRepository->save($rule);
+
+$coupon = $objectManager->create(CouponInterface::class);
+$coupon->setCode('100_percent_forever')
+    ->setUsagePerCustomer(1)
+    ->setRuleId($rule->getRuleId());
+
+$couponRepository = $objectManager->get(CouponRepositoryInterface::class);
+$coupon = $couponRepository->save($coupon);

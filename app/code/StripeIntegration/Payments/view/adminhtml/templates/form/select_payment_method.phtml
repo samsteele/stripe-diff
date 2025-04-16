@@ -32,7 +32,7 @@
     <?php endif; ?>
 
     <div id="new_card_container" style="display: none;">
-        <div id="stripe-card-element"></div>
+        <div id="stripe-card-element" data-init-params="<?= $block->getAdminInitParams(); //phpcs:ignore ?>"></div>
         <input id="save_payment_method" type="checkbox" name="payment[save_payment_method]" class="admin__control-checkbox" />
         <label class="save-payment-method admin__field-label" for="save_payment_method">
             <span><?= __("Save card on customer"); //phpcs:ignore ?></span>

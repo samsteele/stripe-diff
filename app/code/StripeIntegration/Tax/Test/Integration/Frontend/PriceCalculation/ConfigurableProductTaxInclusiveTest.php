@@ -43,7 +43,7 @@ class ConfigurableProductTaxInclusiveTest extends \PHPUnit\Framework\TestCase
         $quoteData = $this->calculator->calculateQuoteData(100, 1, 5, $taxBehaviour);
         $this->compare->compareQuoteData($this->quote->getQuote(), $quoteData);
 
-        $quoteItem = $this->quote->getQuoteItem('simple-product-red');
+        $quoteItem = $this->quote->getQuoteItem('tax-simple-product-red');
         $quoteItemData = $this->calculator->calculateQuoteItemData(100, 5, 1, $taxBehaviour);
         $this->compare->compareQuoteItemData($quoteItem, $quoteItemData);
     }

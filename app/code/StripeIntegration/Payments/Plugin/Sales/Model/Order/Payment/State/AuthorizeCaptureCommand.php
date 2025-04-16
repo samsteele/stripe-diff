@@ -12,7 +12,7 @@ class AuthorizeCaptureCommand
 
     public function __construct(
         \StripeIntegration\Payments\Model\Checkout\Flow $checkoutFlow,
-        StatusResolver $statusResolver = null
+        ?StatusResolver $statusResolver = null
     )
     {
         $this->statusResolver = $statusResolver ? : ObjectManager::getInstance()->get(StatusResolver::class);

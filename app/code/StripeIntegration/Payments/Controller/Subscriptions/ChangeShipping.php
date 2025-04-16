@@ -112,11 +112,8 @@ class ChangeShipping implements CsrfAwareActionInterface
         if (!$order)
             throw new LocalizedException(__("Could not load order for this subscription."));
 
-        $quote = $this->quoteHelper->getQuote();
-        $quote->removeAllItems();
-        $quote->removeAllAddresses();
-        $extensionAttributes = $quote->getExtensionAttributes();
-        $extensionAttributes->setShippingAssignments([]);
+        $this->quoteHelper->deactivateCurrentQuote();
+        $quote = $this->quoteHelper->createFreshQuote();
 
         $productIds = $this->subscriptionsHelper->getSubscriptionProductIDs($subscription);
         $items = $order->getItemsCollection();

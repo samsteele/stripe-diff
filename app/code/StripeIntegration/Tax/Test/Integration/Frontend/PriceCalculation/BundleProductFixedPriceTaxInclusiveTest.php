@@ -49,7 +49,7 @@ class BundleProductFixedPriceTaxInclusiveTest extends \PHPUnit\Framework\TestCas
         $calculatedData = $this->calculator->calculateQuoteData(220, 2, 5, $taxBehaviour);
         $this->compare->compareQuoteData($this->quote->getQuote(), $calculatedData);
 
-        $parentQuoteItem = $this->quote->getQuoteItem('bundle-fixed-price-simple-product-bundle-2-simple-product-bundle-4');
+        $parentQuoteItem = $this->quote->getQuoteItem('tax-bundle-fixed-price-tax-simple-product-bundle-2-tax-simple-product-bundle-4');
         $parentQuoteItemData = $this->calculator->calculateQuoteItemData(220, 10, 2, $taxBehaviour);
         $this->compare->compareQuoteItemData($parentQuoteItem, $parentQuoteItemData);
 
@@ -57,12 +57,12 @@ class BundleProductFixedPriceTaxInclusiveTest extends \PHPUnit\Framework\TestCas
         $order = $this->quote->placeOrder();
         $order = $this->orderHelper->refreshOrder($order);
         $this->compare->compareOrderData($order, $calculatedData);
-        $orderItem = $this->orderHelper->getOrderItem($order, 'bundle-fixed-price-simple-product-bundle-2-simple-product-bundle-4');
+        $orderItem = $this->orderHelper->getOrderItem($order, 'tax-bundle-fixed-price-tax-simple-product-bundle-2-tax-simple-product-bundle-4');
         $this->compare->compareOrderItemData($orderItem, $parentQuoteItemData);
 
         // Create invoice and compare data
         \Magento\TestFramework\Helper\Bootstrap::getInstance()->loadArea('adminhtml');
-        $this->tests->invoiceOnline($order, ['bundle-fixed-price-simple-product-bundle-2-simple-product-bundle-4' => 1]);
+        $this->tests->invoiceOnline($order, ['tax-bundle-fixed-price-tax-simple-product-bundle-2-tax-simple-product-bundle-4' => 1]);
         $order = $this->orderHelper->refreshOrder($order);
         $invoicesCollection = $order->getInvoiceCollection();
         $this->assertEquals(1, $invoicesCollection->getSize());
@@ -70,7 +70,7 @@ class BundleProductFixedPriceTaxInclusiveTest extends \PHPUnit\Framework\TestCas
         $calculatedData = $this->calculator->calculateData(220, 1, 10, $taxBehaviour);
         $this->compare->compareInvoiceData($invoice, $calculatedData);
         $invoiceItemData = $this->calculator->calculateItemData(220, 10, 1, $taxBehaviour);
-        $invoiceItem = $this->invoiceHelper->getInvoiceItem($invoice, 'bundle-fixed-price-simple-product-bundle-2-simple-product-bundle-4');
+        $invoiceItem = $this->invoiceHelper->getInvoiceItem($invoice, 'tax-bundle-fixed-price-tax-simple-product-bundle-2-tax-simple-product-bundle-4');
         $this->compare->compareInvoiceItemData($invoiceItem, $invoiceItemData);
         $shippingData = $this->calculator->calculateShippingData(220, 10, 1, $taxBehaviour);
 
@@ -78,7 +78,7 @@ class BundleProductFixedPriceTaxInclusiveTest extends \PHPUnit\Framework\TestCas
         $expectedInvoicedTotal = $invoiceItemData['price_incl_tax'] + $shippingData['shipping_incl_tax'];
         $this->assertEquals($expectedInvoicedTotal, $order->getTotalInvoiced());
 
-        $this->tests->invoiceOnline($order, ['bundle-fixed-price-simple-product-bundle-2-simple-product-bundle-4' => 1]);
+        $this->tests->invoiceOnline($order, ['tax-bundle-fixed-price-tax-simple-product-bundle-2-tax-simple-product-bundle-4' => 1]);
         $order = $this->orderHelper->refreshOrder($order);
         $invoicesCollection = $order->getInvoiceCollection();
         $this->assertEquals(2, $invoicesCollection->getSize());
@@ -86,7 +86,7 @@ class BundleProductFixedPriceTaxInclusiveTest extends \PHPUnit\Framework\TestCas
         $calculatedData = $this->calculator->calculateData(220, 1, 0, $taxBehaviour);
         $this->compare->compareInvoiceData($invoice, $calculatedData);
         $invoiceItemData = $this->calculator->calculateItemData(220, 0, 1, $taxBehaviour);
-        $invoiceItem = $this->invoiceHelper->getInvoiceItem($invoice, 'bundle-fixed-price-simple-product-bundle-2-simple-product-bundle-4');
+        $invoiceItem = $this->invoiceHelper->getInvoiceItem($invoice, 'tax-bundle-fixed-price-tax-simple-product-bundle-2-tax-simple-product-bundle-4');
         $this->compare->compareInvoiceItemData($invoiceItem, $invoiceItemData);
 
         $this->assertEquals($order->getGrandTotal(), $order->getTotalInvoiced());

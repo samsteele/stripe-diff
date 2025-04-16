@@ -41,7 +41,7 @@ class SimpleProductTest extends \PHPUnit\Framework\TestCase
         $quoteData = $this->calculator->calculateQuoteData(100, 1, 5, 'exclusive');
         $this->compare->compareQuoteData($this->quote->getQuote(), $quoteData);
 
-        $quoteItem = $this->quote->getQuoteItem('simple-product-magento-tax-calculation');
+        $quoteItem = $this->quote->getQuoteItem('tax-simple-product-magento-tax-calculation');
         $quoteItemData = $this->calculator->calculateQuoteItemData(100, 5, 1, 'exclusive');
         $this->compare->compareQuoteItemData($quoteItem, $quoteItemData);
     }

@@ -49,7 +49,7 @@ class IdenticalTaxesOrderCreateTest extends \PHPUnit\Framework\TestCase
             ->setPaymentMethod("checkmo");
 
         $taxBehaviour = 'exclusive';
-        $quoteItem = $this->quote->getQuoteItem('simple-product');
+        $quoteItem = $this->quote->getQuoteItem('tax-simple-product');
         $product = $this->productRepository->get($quoteItem->getSku());
         $price = $product->getPrice();
         $calculatedData = $this->calculator->calculateQuoteDataMultipleTaxes($price, 2, 5, $taxBehaviour);
@@ -64,17 +64,17 @@ class IdenticalTaxesOrderCreateTest extends \PHPUnit\Framework\TestCase
         $order = $this->quote->placeOrder();
         $order = $this->orderHelper->refreshOrder($order);
         $this->compare->compareOrderData($order, $calculatedData);
-        $orderItem = $this->orderHelper->getOrderItem($order, 'simple-product');
+        $orderItem = $this->orderHelper->getOrderItem($order, 'tax-simple-product');
         $this->compare->compareOrderItemData($orderItem, $quoteItemData);
 
         \Magento\TestFramework\Helper\Bootstrap::getInstance()->loadArea('adminhtml');
-        $this->tests->invoiceOnline($order, ['simple-product' => 2]);
+        $this->tests->invoiceOnline($order, ['tax-simple-product' => 2]);
         $order = $this->orderHelper->refreshOrder($order);
         $invoicesCollection = $order->getInvoiceCollection();
         $this->assertEquals(1, $invoicesCollection->getSize());
         $invoice = $invoicesCollection->getFirstItem();
         $this->compare->compareInvoiceData($invoice, $calculatedData);
-        $invoiceItem = $this->invoiceHelper->getInvoiceItem($invoice, 'simple-product');
+        $invoiceItem = $this->invoiceHelper->getInvoiceItem($invoice, 'tax-simple-product');
         $this->compare->compareInvoiceItemData($invoiceItem, $quoteItemData);
     }
 }

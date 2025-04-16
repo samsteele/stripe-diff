@@ -15,6 +15,7 @@ class InitialFee extends AbstractTotal
     public const INITIAL_FEE_TYPE = 'initial_fee';
     public const INITIAL_FEE_CODE = 'initial_fee';
 
+    private $checkoutFlow;
     private $storeManager;
     private $initialFeeHelper;
     private $initialFeeHelperFactory;
@@ -23,12 +24,14 @@ class InitialFee extends AbstractTotal
     private $count = 0;
 
     public function __construct(
+        \StripeIntegration\Payments\Model\Checkout\Flow $checkoutFlow,
         \StripeIntegration\Payments\Helper\InitialFeeFactory $initialFeeHelperFactory,
         \Magento\Store\Model\StoreManagerInterface $storeManager,
         SubscriptionProductFactory $subscriptionProductFactory,
         Config $taxConfig
     )
     {
+        $this->checkoutFlow = $checkoutFlow;
         $this->initialFeeHelperFactory = $initialFeeHelperFactory;
         $this->setCode('initial_fee');
         $this->storeManager = $storeManager;
@@ -86,7 +89,8 @@ class InitialFee extends AbstractTotal
                 // Also, if there is a recurring subscription the initial fee will be disregarded.
                 if ($payment &&
                     ($payment->getAdditionalInformation('remove_initial_fee') ||
-                        $payment->getAdditionalInformation('is_recurring_subscription'))
+                        $payment->getAdditionalInformation('is_recurring_subscription') ||
+                        $this->checkoutFlow->isRecurringSubscriptionOrderBeingPlaced)
                 ) {
                     $baseInitialFee = 0;
                     $initialFee = 0;

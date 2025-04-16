@@ -168,7 +168,7 @@ class SubscriptionPriceCommandTest extends \PHPUnit\Framework\TestCase
         ]);
     }
 
-    public function addressesProvider()
+    public static function addressesProvider()
     {
         $data = [
             // Full address

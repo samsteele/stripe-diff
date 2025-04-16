@@ -39,7 +39,7 @@ class PendingPaymentOrderLifetimeTest extends \PHPUnit\Framework\TestCase
             ->setShippingAddress("Berlin")
             ->setShippingMethod("FlatRate")
             ->setBillingAddress("Berlin")
-            ->setPaymentMethod("SOFORT");
+            ->setPaymentMethod("RedirectBasedMethod");
 
         $order = $this->quote->placeOrder();
         $orderId = $order->getIncrementId();
@@ -58,7 +58,7 @@ class PendingPaymentOrderLifetimeTest extends \PHPUnit\Framework\TestCase
         // Check if the order requires further action
         $clientSecret = $this->service->get_requires_action();
 
-        // For SOFORT payment, action is typically required as it redirects the customer to bank login
+        // For RedirectBasedMethod payment, action is typically required as it redirects the customer to bank login
         $this->assertNotNull($clientSecret, "Client secret should be returned when action is required");
 
         // Verify if the quote was restored properly

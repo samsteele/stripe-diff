@@ -116,5 +116,12 @@ class PlaceOrderTest extends \PHPUnit\Framework\TestCase
                 "txn_type" => $txnType
             ]);
         }
+
+        // Switch to the admin area
+        $this->objectManager->get(\Magento\Framework\App\State::class)->setAreaCode('adminhtml');
+        $order = $this->tests->refreshOrder($order);
+
+        // Create the payment info block for $order
+        $this->assertNotEmpty($this->tests->renderPaymentInfoBlock(\StripeIntegration\Payments\Block\PaymentInfo\Element::class, $order));
     }
 }

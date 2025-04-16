@@ -42,7 +42,7 @@ class SimpleProductTaxExclusiveTest extends \PHPUnit\Framework\TestCase
             ->setBillingAddress("Romania")
             ->setPaymentMethod("checkmo");
 
-        $quoteItem = $this->quote->getQuoteItem('simple-product');
+        $quoteItem = $this->quote->getQuoteItem('tax-simple-product');
         $product = $this->productRepository->get($quoteItem->getSku());
 
         $price = $product->getPrice();

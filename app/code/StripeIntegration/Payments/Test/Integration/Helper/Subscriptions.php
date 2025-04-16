@@ -1,19 +1,19 @@
 <?php
 
-namespace StripeIntegration\Payments\Test\Integration\Frontend\Tax\SubscriptionInitialFee;
+namespace StripeIntegration\Payments\Test\Integration\Helper;
 
-class BaseSubscription extends \PHPUnit\Framework\TestCase
+class Subscriptions
 {
-    private $objectManager;
+    private $testCase;
     private $subscriptions;
     private $subscriptionProductFactory;
 
-    public function __construct(?string $name = null, array $data = [], $dataName = '')
+    public function __construct($testCase)
     {
-        parent::__construct($name, $data, $dataName);
-        $this->objectManager = \Magento\TestFramework\ObjectManager::getInstance();
-        $this->subscriptions = $this->objectManager->get(\StripeIntegration\Payments\Helper\Subscriptions::class);
-        $this->subscriptionProductFactory = $this->objectManager->get(\StripeIntegration\Payments\Model\SubscriptionProductFactory::class);
+        $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+        $this->subscriptions = $objectManager->get(\StripeIntegration\Payments\Helper\Subscriptions::class);
+        $this->subscriptionProductFactory = $objectManager->get(\StripeIntegration\Payments\Model\SubscriptionProductFactory::class);
+        $this->testCase = $testCase;
     }
 
     public function compareSubscriptionDetails($order, $details)
@@ -24,7 +24,7 @@ class BaseSubscription extends \PHPUnit\Framework\TestCase
             if ($item->getSku() == $details['sku'])
                 $orderItem = $item;
         }
-        $this->assertNotEmpty($orderItem);
+        $this->testCase->assertNotEmpty($orderItem);
 
         $subscriptionProductModel = $this->subscriptionProductFactory->create()->fromOrderItem($orderItem);
         $subscriptionProfile = $this->subscriptions->getSubscriptionDetails($subscriptionProductModel, $order, $orderItem);
@@ -50,7 +50,7 @@ class BaseSubscription extends \PHPUnit\Framework\TestCase
 
         foreach ($expectedProfile as $key => $value)
         {
-            $this->assertEquals($value, $subscriptionProfile[$key], $key);
+            $this->testCase->assertEquals($value, $subscriptionProfile[$key], $key);
         }
     }
 

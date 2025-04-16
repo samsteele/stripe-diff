@@ -6,6 +6,9 @@ use Magento\Sales\Model\Order\Invoice;
 use StripeIntegration\Tax\Model\StripeTax;
 use Magento\GiftWrapping\Model\Total\Invoice\Tax\Giftwrapping;
 
+/**
+ * @codeCoverageIgnoreFile This is a class which will be used in Magento Enterprise installations.
+ */
 class GiftwrappingPlugin
 {
     private $stripeTax;

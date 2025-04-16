@@ -23,6 +23,7 @@ class ChargeSucceeded
     private $json;
     private $currencyHelper;
     private $convert;
+    private $addressHelper;
 
     public function __construct(
         \StripeIntegration\Payments\Model\Stripe\Service\StripeObjectServicePool $stripeObjectServicePool,
@@ -39,6 +40,7 @@ class ChargeSucceeded
         \StripeIntegration\Payments\Helper\Multishipping $multishippingHelper,
         \StripeIntegration\Payments\Helper\Currency $currencyHelper,
         \StripeIntegration\Payments\Helper\Convert $convert,
+        \StripeIntegration\Payments\Helper\Address $addressHelper,
         \Magento\Framework\Serialize\Serializer\Json $json
     )
     {
@@ -59,6 +61,7 @@ class ChargeSucceeded
         $this->json = $json;
         $this->currencyHelper = $currencyHelper;
         $this->convert = $convert;
+        $this->addressHelper = $addressHelper;
     }
 
     public function process($arrEvent, $object)
@@ -82,7 +85,6 @@ class ChargeSucceeded
             return;
 
         $order = $this->webhooksHelper->loadOrderFromEvent($arrEvent);
-        $hasSubscriptions = $this->orderHelper->hasSubscriptionsIn($order->getAllItems());
 
         // Set the risk score and level
         if (isset($object['outcome']['risk_score']) && $object['outcome']['risk_score'] >= 0)
@@ -112,10 +114,13 @@ class ChargeSucceeded
             }
         }
 
-        $wasTransactionPending = $order->getPayment()->getAdditionalInformation("is_transaction_pending");
-
         if (empty($object['payment_intent']))
             throw new WebhookException("This charge was not created by a payment intent.");
+
+        $this->quoteHelper->deactivateQuoteById($order->getQuoteId());
+        $this->updateOrderAddresses($order, $object);
+
+        $wasTransactionPending = $order->getPayment()->getAdditionalInformation("is_transaction_pending");
 
         $transactionId = $object['payment_intent'];
 
@@ -149,14 +154,6 @@ class ChargeSucceeded
         if ($amountCaptured > 0)
         {
             $this->helper->invoiceOrder($order, $transactionId, \Magento\Sales\Model\Order\Invoice::CAPTURE_OFFLINE, true);
-        }
-        else if ($amountCaptured == 0) // Authorize Only mode
-        {
-            if ($hasSubscriptions)
-            {
-                // If it has trial subscriptions, we want a Paid invoice which will partially refund
-                $this->helper->invoiceOrder($order, $transactionId, \Magento\Sales\Model\Order\Invoice::CAPTURE_OFFLINE, true);
-            }
         }
 
         if ($this->config->isStripeRadarEnabled() && !empty($object['outcome']['type']) && $object['outcome']['type'] == "manual_review")
@@ -267,5 +264,49 @@ class ChargeSucceeded
         if ($paymentMethodType) {
             $this->paymentMethodHelper->savePaymentMethod($order, $paymentMethodType, $cardData);
         }
+    }
+
+    // Wallets hide personal data for data privacy reasons. We only get these data after the payment is completed.
+    private function updateOrderAddresses($order, $object)
+    {
+        if (!$this->isWalletPayment($object))
+        {
+            return;
+        }
+
+        if (!empty($object['billing_details']))
+        {
+            $firstname = $this->addressHelper->getFirstnameFromStripeAddress($object['billing_details']);
+            $lastname = $this->addressHelper->getLastnameFromStripeAddress($object['billing_details']);
+            $phone = $this->addressHelper->getPhoneFromStripeAddress($object['billing_details']);
+            $email = $this->addressHelper->getEmailFromStripeAddress($object['billing_details']);
+            $firstname ? $order->getBillingAddress()->setFirstname($firstname) : null;
+            $lastname ? $order->getBillingAddress()->setLastname($lastname) : null;
+            $phone ? $order->getBillingAddress()->setTelephone($phone) : null;
+            $email ? $order->getBillingAddress()->setEmail($email) : null;
+        }
+
+        if (!empty($object['shipping']) && !$order->getIsVirtual())
+        {
+            $firstname = $this->addressHelper->getFirstnameFromStripeAddress($object['shipping']);
+            $lastname = $this->addressHelper->getLastnameFromStripeAddress($object['shipping']);
+            $phone = $this->addressHelper->getPhoneFromStripeAddress($object['shipping']);
+            $email = $this->addressHelper->getEmailFromStripeAddress($object['shipping']);
+            $firstname ? $order->getShippingAddress()->setFirstname($firstname) : null;
+            $lastname ? $order->getShippingAddress()->setLastname($lastname) : null;
+            $phone ? $order->getShippingAddress()->setTelephone($phone) : null;
+            $email ? $order->getShippingAddress()->setEmail($email) : null;
+        }
+    }
+
+    private function isWalletPayment($object)
+    {
+        if (isset($object['payment_method_details']['type']))
+        {
+            $type = $object['payment_method_details']['type'];
+            return !empty($object['payment_method_details'][$type]['wallet']['type']);
+        }
+
+        return false;
     }
 }

@@ -18,8 +18,8 @@ class PlaceOrder
         \Magento\Framework\GraphQl\Config\Element\Field $field,
         $context,
         \Magento\Framework\GraphQl\Schema\Type\ResolveInfo $info,
-        array $value = null,
-        array $args = null
+        ?array $value = null,
+        ?array $args = null
     )
     {
         if (!empty($result["order"]["order_number"]))

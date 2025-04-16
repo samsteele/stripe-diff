@@ -23,7 +23,7 @@ class PaymentMethodLink extends Current
 
     protected function _toHtml()
     {
-        if ($this->stripeConfigModel->getSavePaymentMethod()) {
+        if ($this->stripeConfigModel->displayMyPaymentMethodsLink()) {
             return parent::_toHtml();
         } else {
             return '';

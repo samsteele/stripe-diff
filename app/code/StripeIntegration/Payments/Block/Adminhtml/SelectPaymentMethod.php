@@ -10,11 +10,17 @@ class SelectPaymentMethod extends \Magento\Backend\Block\Widget\Form\Generic
     private $customer;
     private $sessionQuote;
     private $helper;
+    private $initParams;
+    private $serializer;
+    private $escaper;
 
     public function __construct(
         \StripeIntegration\Payments\Helper\Generic $helper,
         \StripeIntegration\Payments\Helper\PaymentMethod $paymentMethodHelper,
+        \StripeIntegration\Payments\Helper\InitParams $initParams,
         \StripeIntegration\Payments\Model\Config $paymentsConfig,
+        \Magento\Framework\Escaper $escaper,
+        \Magento\Framework\Serialize\SerializerInterface $serializer,
         \Magento\Backend\Model\Session\Quote $sessionQuote,
         \Magento\Backend\Block\Template\Context $context,
         \Magento\Framework\Registry $registry,
@@ -27,6 +33,9 @@ class SelectPaymentMethod extends \Magento\Backend\Block\Widget\Form\Generic
         $this->sessionQuote = $sessionQuote;
         $this->customer = $helper->getCustomerModel();
         $this->helper = $helper;
+        $this->initParams = $initParams;
+        $this->serializer = $serializer;
+        $this->escaper = $escaper;
     }
 
     protected function initStripeCustomer()
@@ -93,5 +102,16 @@ class SelectPaymentMethod extends \Magento\Backend\Block\Widget\Form\Generic
             return "http://dashboard.stripe.com/test/customers/" . $this->customer->getStripeId();
         else
             return "http://dashboard.stripe.com/customers/" . $this->customer->getStripeId();
+    }
+
+    public function getAdminInitParams()
+    {
+        $params = $this->initParams->getAdminParams();
+
+        // Prepare the array so that it can be assigned to a data- attribute on the HTML element
+        $jsonParams = $this->serializer->serialize($params);
+        $preparedParams = $this->escaper->escapehtml($jsonParams);
+
+        return $preparedParams;
     }
 }

@@ -9,12 +9,13 @@ use StripeIntegration\Tax\Test\Integration\Helper\Calculator;
  * @magentoAppIsolation enabled
  * @magentoDbIsolation enabled
  */
-class RecurringOrdersTaxInclusiveTest extends BaseSubscription
+class RecurringOrdersTaxInclusiveTest extends \PHPUnit\Framework\TestCase
 {
     private $compare;
     private $quote;
     private $tests;
     private $calculator;
+    private $subscriptionsHelper;
 
     public function setUp(): void
     {
@@ -22,6 +23,7 @@ class RecurringOrdersTaxInclusiveTest extends BaseSubscription
         $this->tests = new \StripeIntegration\Payments\Test\Integration\Helper\Tests($this);
         $this->compare = new \StripeIntegration\Payments\Test\Integration\Helper\Compare($this);
         $this->calculator = new Calculator('Romania');
+        $this->subscriptionsHelper = new \StripeIntegration\Payments\Test\Integration\Helper\Subscriptions($this);
     }
 
     /**
@@ -60,7 +62,7 @@ class RecurringOrdersTaxInclusiveTest extends BaseSubscription
             'tax_percent' => $this->calculator->getTaxRate(),
             'mode' => 'inclusive'
         ];
-        $this->compareSubscriptionDetails($order, $subscriptionDetails);
+        $this->subscriptionsHelper->compareSubscriptionDetails($order, $subscriptionDetails);
 
         // Stripe checks
         $orderTotal = 1800;

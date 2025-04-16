@@ -115,10 +115,14 @@ class InvoiceUpcoming
         $this->recurringOrderHelper->setQuoteItemsFrom($originalOrder, $quote);
         $this->recurringOrderHelper->setQuoteShippingMethodFrom($originalOrder, $quote);
         $this->recurringOrderHelper->setQuoteDiscountFrom($originalOrder, $quote, $originalSubscription->discount);
-        $this->recurringOrderHelper->setQuotePaymentMethodFrom($originalOrder, $quote);
+
+        $quote->setBaseCurrencyCode($originalOrder->getBaseCurrencyCode());
+        $quote->setQuoteCurrencyCode($originalOrder->getOrderCurrencyCode());
+        $quote->setBaseToQuoteRate($originalOrder->getBaseToQuoteRate());
+        $quote->setStore($originalOrder->getStore());
+
         $quote->setTotalsCollectedFlag(false)->collectTotals();
-        $quote->setIsActive(false);
-        $this->quoteHelper->saveQuote($quote); // This is needed because the quote is saved inside recurringOrderHelper->setQuotePaymentMethodFrom() as active
+        $this->quoteHelper->deactivateQuote($quote); // This is needed because the quote is saved inside recurringOrderHelper->setQuotePaymentMethodFrom() as active
 
         // Get the subscription profile
         $subscription = $this->subscriptionsHelper->getSubscriptionFromQuote($quote);

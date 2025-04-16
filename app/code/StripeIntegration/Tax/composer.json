@@ -2,7 +2,7 @@
     "name": "stripe/module-tax",
     "type": "magento2-module",
     "description": "Stripe Tax for Adobe Commerce and Magento Open Source.",
-    "version": "1.1.0",
+    "version": "1.1.1",
     "require": {
         "php": ">=7.4"
     },

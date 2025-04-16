@@ -111,5 +111,8 @@ class PlaceOrderTest extends \PHPUnit\Framework\TestCase
             "total_due" => 0,
             "total_paid" => $order->getGrandTotal()
         ]);
+
+        // Create the payment info block for $order
+        $this->assertNotEmpty($this->tests->renderPaymentInfoBlock(\StripeIntegration\Payments\Block\PaymentInfo\Invoice::class, $order));
     }
 }

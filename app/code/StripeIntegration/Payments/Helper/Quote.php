@@ -167,7 +167,7 @@ class Quote
     /**
      * Add product to shopping cart (quote)
      */
-    public function addProduct($productId, array $requestInfo = null)
+    public function addProduct($productId, ?array $requestInfo = null)
     {
         if (!$productId)
             throw new \Magento\Framework\Exception\LocalizedException(__('The product does not exist.'));
@@ -476,5 +476,76 @@ class Quote
         }
 
         throw new Exception("Quote item not found for order item");
+    }
+
+    public function deactivateQuoteById($quoteId)
+    {
+        if (empty($quoteId))
+            return;
+
+        try
+        {
+            $quote = $this->quoteRepository->get($quoteId);
+            $this->deactivateQuote($quote);
+        }
+        catch (\Exception $e)
+        {
+
+        }
+    }
+
+    public function deactivateQuote($quote)
+    {
+        if (empty($quote) || !$quote->getId())
+            return;
+
+        try
+        {
+            $quote->setIsActive(false);
+            $this->quoteRepository->save($quote);
+        }
+        catch (\Exception $e)
+        {
+
+        }
+    }
+
+    public function deactivateCurrentQuote()
+    {
+        $quote = $this->getQuote();
+        if ($quote && $quote->getId())
+        {
+            $this->deactivateQuote($quote);
+        }
+    }
+
+    public function createFreshQuote()
+    {
+        // Create a new empty quote
+        $quote = $this->quoteFactory->create();
+
+        // Set store ID and other essential properties
+        $quote->setStoreId($this->checkoutSession->getStoreId());
+
+        // If customer is logged in, associate the quote with them
+        if ($this->checkoutSession->getCustomerId()) {
+            $quote->setCustomerId($this->checkoutSession->getCustomerId());
+            $quote->setCustomerEmail($this->checkoutSession->getCustomerEmail());
+            $quote->setCustomerIsGuest(0);
+        } else {
+            $quote->setCustomerIsGuest(1);
+        }
+
+        // Save the quote
+        $this->quoteRepository->save($quote);
+
+        // Set as active quote in session
+        $this->checkoutSession->setQuoteId($quote->getId());
+        $this->checkoutSession->replaceQuote($quote);
+
+        // Add to quotes cache
+        $this->quotesCache[$quote->getId()] = $quote;
+
+        return $quote;
     }
 }

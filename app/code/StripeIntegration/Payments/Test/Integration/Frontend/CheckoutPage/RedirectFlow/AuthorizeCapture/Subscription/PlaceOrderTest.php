@@ -9,12 +9,14 @@ namespace StripeIntegration\Payments\Test\Integration\Frontend\RedirectFlow\Auth
  */
 class PlaceOrderTest extends \PHPUnit\Framework\TestCase
 {
+    private $objectManager;
     private $quote;
     private $tests;
     private $service;
 
     public function setUp(): void
     {
+        $this->objectManager = \Magento\TestFramework\ObjectManager::getInstance();
         $this->tests = new \StripeIntegration\Payments\Test\Integration\Helper\Tests($this);
         $this->quote = new \StripeIntegration\Payments\Test\Integration\Helper\Quote();
         $this->service = $this->tests->objectManager->get(\StripeIntegration\Payments\Api\Service::class);
@@ -56,5 +58,12 @@ class PlaceOrderTest extends \PHPUnit\Framework\TestCase
         $invoice = $order->getInvoiceCollection()->getFirstItem();
         $this->assertEquals($order->getGrandTotal(), $invoice->getGrandTotal());
         $this->assertEquals(\Magento\Sales\Model\Order\Invoice::STATE_PAID, $invoice->getState());
+
+        // Switch to the admin area
+        $this->objectManager->get(\Magento\Framework\App\State::class)->setAreaCode('adminhtml');
+        $order = $this->tests->refreshOrder($order);
+
+        // Create the payment info block for $order
+        $this->assertNotEmpty($this->tests->renderPaymentInfoBlock(\StripeIntegration\Payments\Block\PaymentInfo\Checkout::class, $order));
     }
 }

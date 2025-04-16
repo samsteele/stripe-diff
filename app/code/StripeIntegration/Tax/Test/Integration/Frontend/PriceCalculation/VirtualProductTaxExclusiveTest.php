@@ -20,6 +20,7 @@ class VirtualProductTaxExclusiveTest extends \PHPUnit\Framework\TestCase
     private $tests;
     private $orderHelper;
     private $invoiceHelper;
+    private $creditmemoHelper;
 
     public function setUp(): void
     {
@@ -31,6 +32,7 @@ class VirtualProductTaxExclusiveTest extends \PHPUnit\Framework\TestCase
         $this->tests = new \StripeIntegration\Tax\Test\Integration\Helper\Tests();
         $this->orderHelper = new \StripeIntegration\Tax\Test\Integration\Helper\Order();
         $this->invoiceHelper = new \StripeIntegration\Tax\Test\Integration\Helper\Invoice();
+        $this->creditmemoHelper = new \StripeIntegration\Tax\Test\Integration\Helper\Creditmemo();
     }
 
     /**
@@ -60,7 +62,7 @@ class VirtualProductTaxExclusiveTest extends \PHPUnit\Framework\TestCase
             ->setBillingAddress("Romania")
             ->setPaymentMethod("checkmo");
 
-        $quoteItem = $this->quote->getQuoteItem('virtual-product');
+        $quoteItem = $this->quote->getQuoteItem('tax-virtual-product');
         $product = $this->productRepository->get($quoteItem->getSku());
 
         $price = $product->getPrice();
@@ -74,14 +76,14 @@ class VirtualProductTaxExclusiveTest extends \PHPUnit\Framework\TestCase
         $order = $this->quote->placeOrder();
         $order = $this->orderHelper->refreshOrder($order);
         $this->compare->compareOrderData($order, $calculatedData);
-        $orderItem = $this->orderHelper->getOrderItem($order, 'virtual-product');
+        $orderItem = $this->orderHelper->getOrderItem($order, 'tax-virtual-product');
         $this->compare->compareOrderItemData($orderItem, $quoteItemData);
 
         $orderGrandTotal = $order->getGrandTotal();
 
         // Create invoice and compare data
         \Magento\TestFramework\Helper\Bootstrap::getInstance()->loadArea('adminhtml');
-        $this->tests->invoiceOnline($order, ['virtual-product' => 1]);
+        $this->tests->invoiceOnline($order, ['tax-virtual-product' => 1]);
         $order = $this->orderHelper->refreshOrder($order);
         $invoicesCollection = $order->getInvoiceCollection();
         $this->assertEquals(1, $invoicesCollection->getSize());
@@ -89,7 +91,7 @@ class VirtualProductTaxExclusiveTest extends \PHPUnit\Framework\TestCase
         $calculatedData = $this->calculator->calculateData($price, 1, 0, $taxBehaviour);
         $this->compare->compareInvoiceData($invoice, $calculatedData);
         $invoiceItemData = $this->calculator->calculateItemData($price, 0, 1, $taxBehaviour);
-        $invoiceItem = $this->invoiceHelper->getInvoiceItem($invoice, 'virtual-product');
+        $invoiceItem = $this->invoiceHelper->getInvoiceItem($invoice, 'tax-virtual-product');
         $this->compare->compareInvoiceItemData($invoiceItem, $invoiceItemData);
 
         // Check for intermediate value if the invoiced total for order
@@ -101,7 +103,7 @@ class VirtualProductTaxExclusiveTest extends \PHPUnit\Framework\TestCase
         // and that will make it different from the next one which will not have it
         sleep(1);
         \Magento\TestFramework\Helper\Bootstrap::getInstance()->loadArea('adminhtml');
-        $this->tests->invoiceOnline($order, ['virtual-product' => 1]);
+        $this->tests->invoiceOnline($order, ['tax-virtual-product' => 1]);
         $order = $this->orderHelper->refreshOrder($order);
         $invoicesCollection = $order->getInvoiceCollection();
         $this->assertEquals(2, $invoicesCollection->getSize());
@@ -109,10 +111,36 @@ class VirtualProductTaxExclusiveTest extends \PHPUnit\Framework\TestCase
         $calculatedData = $this->calculator->calculateData($price, 1, 0, $taxBehaviour);
         $this->compare->compareInvoiceData($invoice, $calculatedData);
         $invoiceItemData = $this->calculator->calculateItemData($price, 0, 1, $taxBehaviour);
-        $invoiceItem = $this->invoiceHelper->getInvoiceItem($invoice, 'virtual-product');
+        $invoiceItem = $this->invoiceHelper->getInvoiceItem($invoice, 'tax-virtual-product');
         $this->compare->compareInvoiceItemData($invoiceItem, $invoiceItemData);
 
         // Check that the whole amount of the order was invoiced
         $this->assertEquals($orderGrandTotal, $order->getTotalInvoiced());
+
+        $this->assertTrue($order->canCreditmemo());
+        $shipping = 0;
+        // Create the credit memo and compare the data for it
+        $creditmemo = $this->tests->refundOffline($order, ['tax-virtual-product' => 1], $shipping);
+        $order = $this->orderHelper->refreshOrder($order);
+        $creditmemoData = $this->calculator->calculateData($price, 1, $shipping, $taxBehaviour);
+        $creditmemoItemData = $this->calculator->calculateQuoteItemData($price, $shipping, 1, $taxBehaviour);
+        $creditmemoItem = $this->creditmemoHelper->getCreditmemoItem($creditmemo, 'tax-virtual-product');
+        // Compare credit memo data
+        $this->compare->compareCreditmemoData($creditmemo, $creditmemoData);
+        $this->compare->compareCreditMemoItemData($creditmemoItem, $creditmemoItemData);
+        // You can still create credit memos for the order
+        $this->assertTrue($order->canCreditmemo());
+
+        // Create the credit memo and compare the data for it
+        $creditmemo = $this->tests->refundOffline($order, ['tax-virtual-product' => 1]);
+        $order = $this->orderHelper->refreshOrder($order);
+        $creditmemoData = $this->calculator->calculateData($price, 1, 0, $taxBehaviour);
+        $creditmemoItemData = $this->calculator->calculateQuoteItemData($price, 0, 1, $taxBehaviour);
+        $creditmemoItem = $this->creditmemoHelper->getCreditmemoItem($creditmemo, 'tax-virtual-product');
+        // Compare credit memo data
+        $this->compare->compareCreditmemoData($creditmemo, $creditmemoData);
+        $this->compare->compareCreditMemoItemData($creditmemoItem, $creditmemoItemData);
+        // You can still create credit memos for the order
+        $this->assertFalse($order->canCreditmemo());
     }
 }

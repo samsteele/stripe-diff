@@ -8,14 +8,17 @@ class InitialFee
     private $subscriptionProductFactory;
     private $paymentMethodHelper;
     private $currencyHelper;
+    private $checkoutFlow;
 
     public function __construct(
         \StripeIntegration\Payments\Model\SubscriptionProductFactory $subscriptionProductFactory,
+        \StripeIntegration\Payments\Model\Checkout\Flow $checkoutFlow,
         \StripeIntegration\Payments\Helper\CheckoutSession $checkoutSessionHelper,
         \StripeIntegration\Payments\Helper\PaymentMethod $paymentMethodHelper,
         \StripeIntegration\Payments\Helper\Currency $currencyHelper
     ) {
         $this->subscriptionProductFactory = $subscriptionProductFactory;
+        $this->checkoutFlow = $checkoutFlow;
         $this->checkoutSessionHelper = $checkoutSessionHelper;
         $this->paymentMethodHelper = $paymentMethodHelper;
         $this->currencyHelper = $currencyHelper;
@@ -109,7 +112,7 @@ class InitialFee
 
     public function getTotalInitialFeeForOrder($filteredOrderItems, $order): array
     {
-        if ($order->getIsRecurringOrder() || $order->getRemoveInitialFee()) {
+        if ($this->checkoutFlow->isRecurringSubscriptionOrderBeingPlaced || $order->getRemoveInitialFee() || $order->getPayment()->getAdditionalInformation("is_recurring_subscription")) {
             return [
                 "initial_fee" => 0,
                 "base_initial_fee" => 0
@@ -150,7 +153,7 @@ class InitialFee
 
     public function getTotalInitialFeeFor($items, $quote, $quoteRate = 1)
     {
-        if ($quote->getIsRecurringOrder() || $quote->getRemoveInitialFee())
+        if ($this->checkoutFlow->isRecurringSubscriptionOrderBeingPlaced || $quote->getRemoveInitialFee())
             return 0;
 
         return $this->getInitialFeeForItems($items, $quoteRate);

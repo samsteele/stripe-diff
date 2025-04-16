@@ -28,6 +28,9 @@ class AbstractCalculator
             case 'US':
                 $this->taxRate = 10;
                 break;
+            case 'Exemption':
+                $this->taxRate = 0;
+                break;
             default:
                 $this->taxRate = 25;
                 break;

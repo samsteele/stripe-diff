@@ -38,17 +38,7 @@ class Checkout
     public function confirm($session, $order, $paymentMethod = "SuccessCard", $billingAddress = "NewYork")
     {
         // Build confirmation params
-        if ($paymentMethod == "sofort_success")
-        {
-            $params = [
-                'eid' => 'NA',
-                'expected_amount' => $session->amount_total,
-                'return_url' => $this->helper->getUrl('stripe/payment/index'),
-                'payment_method' => "pm_sofort_generatedSepaDebitIntentsSucceedGermany",
-                'expected_payment_method_type' => "sofort"
-            ];
-        }
-        else if (in_array($paymentMethod, ["SuccessCard", "card"]))
+        if (in_array($paymentMethod, ["SuccessCard", "card"]))
         {
             $paymentMethod = $this->paymentMethodHelper->createPaymentMethodFromCardNumber("4242424242424242", $billingAddress);
             $params = $this->getParamsForPaymentMethod($paymentMethod, $session);

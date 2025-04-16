@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.1.1 - 2025-04-11
+
+- Compatibility with Magento 2.4.8 and PHP 8.4.
+
 ## 1.1.0 - 2025-03-12
 
 - Added tax exemptions based on customer groups.

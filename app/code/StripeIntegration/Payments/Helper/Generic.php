@@ -1112,23 +1112,6 @@ class Generic
         }
     }
 
-    public function isRecurringOrder($method)
-    {
-        try
-        {
-            $info = $method->getInfoInstance();
-
-            if (!$info)
-                return false;
-
-            return $info->getAdditionalInformation("is_recurring_subscription");
-        }
-        catch (\Exception $e)
-        {
-            return false;
-        }
-    }
-
     public function resetPaymentData($payment)
     {
         if ($payment->getPaymentId())
@@ -1181,8 +1164,9 @@ class Generic
         {
             $payment->setAdditionalInformation("payment_location", "CLI migrated subscription order");
         }
-        else if (!empty($data['is_recurring_subscription']))
+        else if ($this->checkoutFlow->isRecurringSubscriptionOrderBeingPlaced)
         {
+            $payment->setAdditionalInformation("is_recurring_subscription", true);
             $payment->setAdditionalInformation("payment_location", "Recurring subscription order");
         }
         else if ($this->checkoutFlow->isExpressCheckout)
@@ -1248,8 +1232,6 @@ class Generic
             // Used by the express checkout element
             $payment->setAdditionalInformation('confirmation_token', $data['confirmation_token']);
         }
-        else if (!empty($data['is_recurring_subscription']))
-            $payment->setAdditionalInformation('is_recurring_subscription', $data['is_recurring_subscription']);
 
         if (!empty($data['is_migrated_subscription']))
             $payment->setAdditionalInformation('is_migrated_subscription', true);

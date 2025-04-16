@@ -28,7 +28,6 @@ class Quote
     private $objectFactory;
     private $paymentsHelper;
     private $quoteCollectionFactory;
-    private $quoteManagement;
     private $storeManager;
     private $paymentMethodHelper;
     private $billingAddressIdentifier;
@@ -52,7 +51,6 @@ class Quote
         $this->paymentsHelper = $this->objectManager->get(\StripeIntegration\Payments\Helper\Generic::class);
         $this->paymentMethodHelper = $this->objectManager->get(\StripeIntegration\Payments\Test\Integration\Helper\PaymentMethod::class);
 
-        $this->quoteManagement = $this->objectManager->get(\StripeIntegration\Payments\Test\Integration\Helper\QuoteManagement::class);
         $this->backendSessionQuote = $this->objectManager->get(\Magento\Backend\Model\Session\Quote::class);
 
         \Magento\TestFramework\Helper\Bootstrap::getInstance()->loadArea(\Magento\Framework\App\Area::AREA_FRONTEND);
@@ -513,7 +511,9 @@ class Quote
 
             $billingAddressData = $this->quote->getBillingAddress()->getData();
             $shippingAddressData = $this->quote->getShippingAddress()->getData();
-            $this->availablePaymentMethods = json_decode($this->api->get_checkout_payment_methods($billingAddressData, $shippingAddressData), true);
+            $shippingMethod = $this->quote->getShippingAddress()->getShippingMethod();
+            $couponCode = $this->quote->getCouponCode();
+            $this->availablePaymentMethods = json_decode($this->api->get_checkout_payment_methods($billingAddressData, $shippingAddressData, $shippingMethod, $couponCode), true);
 
             if (!empty($this->availablePaymentMethods['error']))
                 throw new \Exception($this->availablePaymentMethods['error']);
@@ -542,13 +542,6 @@ class Quote
         $this->checkoutSession->setLastRealOrder($order);
         $this->checkoutSession->setLastRealOrderId($order->getIncrementId());
 
-        return $order;
-    }
-
-    public function mockOrder()
-    {
-        $order = $this->quoteManagement->mockOrder($this->quote);
-        $this->checkoutSession->replaceQuote($this->quote);
         return $order;
     }
 

@@ -80,18 +80,6 @@ class Address
                     'firstname' => 'Crystal',
                     'email' => 'crystal@example.com',
                 ];
-            case 'SofortGermanySuccess':
-                return [
-                    'telephone' => "030 63 38673",
-                    'postcode' => "13469",
-                    'country_id' => 'DE',
-                    'region_id' => $this->getRegionId("DE", "BER"),
-                    'city' => 'Berlin Lübars',
-                    'street' => ['Brandenburgische Straße 41'],
-                    'lastname' => 'Osterhagen',
-                    'firstname' => 'Mario',
-                    'email' => 'generatedSepaDebitIntentsSucceedGermany@example.com',
-                ];
             case 'Berlin':
                 return [
                     'telephone' => "030 63 38673",
@@ -242,13 +230,6 @@ class Address
             'name' => $address['firstname'] . " " . $address['lastname'],
             'phone' => $address['telephone']
         ];
-
-        switch ($identifier)
-        {
-            case "SofortGermanySuccess":
-                $params["name"] = "succeeding_charge";
-                break;
-        }
 
         return $params;
     }

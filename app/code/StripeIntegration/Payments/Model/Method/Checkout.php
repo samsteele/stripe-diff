@@ -17,9 +17,11 @@ class Checkout extends \Magento\Payment\Model\Method\Adapter
     private $helper;
     private $checkoutSessionHelper;
     private $quoteHelper;
+    private $checkoutFlow;
 
     public function __construct(
         \StripeIntegration\Payments\Model\Config $config,
+        \StripeIntegration\Payments\Model\Checkout\Flow $checkoutFlow,
         \StripeIntegration\Payments\Helper\Generic $helper,
         \StripeIntegration\Payments\Helper\CheckoutSession $checkoutSessionHelper,
         \StripeIntegration\Payments\Helper\Quote $quoteHelper,
@@ -29,12 +31,13 @@ class Checkout extends \Magento\Payment\Model\Method\Adapter
         $code,
         $formBlockType,
         $infoBlockType,
-        CommandPoolInterface $commandPool = null,
-        ValidatorPoolInterface $validatorPool = null,
-        CommandManagerInterface $commandExecutor = null,
-        LoggerInterface $logger = null
+        ?CommandPoolInterface $commandPool = null,
+        ?ValidatorPoolInterface $validatorPool = null,
+        ?CommandManagerInterface $commandExecutor = null,
+        ?LoggerInterface $logger = null
     ) {
         $this->config = $config;
+        $this->checkoutFlow = $checkoutFlow;
         $this->helper = $helper;
         $this->checkoutSessionHelper = $checkoutSessionHelper;
         $this->quoteHelper = $quoteHelper;
@@ -67,9 +70,9 @@ class Checkout extends \Magento\Payment\Model\Method\Adapter
             !$this->checkoutSessionHelper->isSubscriptionUpdate();
     }
 
-    public function isAvailable(\Magento\Quote\Api\Data\CartInterface $quote = null)
+    public function isAvailable(?\Magento\Quote\Api\Data\CartInterface $quote = null)
     {
-        if ($this->helper->isRecurringOrder($this))
+        if ($this->checkoutFlow->isPaymentMethodAvailable())
             return true;
 
         if (!$this->isEnabled($quote))
