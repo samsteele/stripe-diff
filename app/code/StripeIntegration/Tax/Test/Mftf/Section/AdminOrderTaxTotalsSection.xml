@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ /**
+  * Copyright © Magento, Inc. All rights reserved.
+  * See COPYING.txt for license details.
+  */
+-->
+
+<sections xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:noNamespaceSchemaLocation="urn:magento:mftf:Page/etc/SectionObject.xsd">
+    <section name="AdminOrderTaxTotalsSection">
+        <element name="orderTotalsTable" type="text" selector=".order-subtotal-table" />
+        <element name="subtotalExcludingTax" type="text" selector=".order-subtotal-table tbody tr.col-0>td span.price"/>
+        <element name="subtotalIncludingTax" type="text" selector=".order-subtotal-table tbody tr.col-1>td span.price"/>
+        <element name="shippingExcludingTax" type="text" selector=".order-subtotal-table tbody tr.col-2>td span.price"/>
+        <element name="shippingIncludingTax" type="text" selector=".order-subtotal-table tbody tr.col-3>td span.price"/>
+        <element name="totalExcludingTax" type="text" selector=".order-subtotal-table tbody tr.col-4>td span.price"/>
+        <element name="totalTax" type="text" selector=".order-subtotal-table tbody tr.summary-total>td:nth-child(2) span.price"/>
+        <element name="totalIncludingTax" type="text" selector=".order-subtotal-table tbody tr.col-6>td span.price"/>
+
+    </section>
+</sections>

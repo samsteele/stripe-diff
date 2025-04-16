@@ -1,0 +1,21 @@
+<!--@subject A payment was collected, but the order could not be saved @-->
+<!--@vars {
+"var formattedAmount":"Formatted Amount",
+"var paymentLink":"Payment Link",
+"var paymentIntentId":"Payment Intent ID",
+"var errorMessage":"The error message",
+"var errorStackTrace":"The error stack trace",
+} @-->
+
+{{template config_path="design/email/header_template"}}
+
+<p>A payment of {{var formattedAmount}} was successfully collected in Stripe (<a href="{{var paymentLink}}">{{var paymentIntentId}}</a>),
+    but a checkout crash prevented the order from being saved in Magento.</p>
+
+<p>The checkout crash was:</p>
+
+<code><pre>{{var errorMessage}}</pre></code>
+
+<code><pre>{{var errorStackTrace}}</pre></code>
+
+{{template config_path="design/email/footer_template"}}

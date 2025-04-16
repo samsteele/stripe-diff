@@ -1,0 +1,16 @@
+<?php if ($block->shouldRender()): ?>
+<tr>
+    <th class="mark" colspan="<?= $block->escapeHtml($block->getColspan()) ?>">
+        <strong class="stripe-label">Subscription Total</strong><br>
+        <div class="stripe-period" style="font-size: smaller;">
+        <?= $block->escapeHtml($block->getStartDateLabel()) ?>
+        </div>
+    </th>
+    <td class="amount">
+        <strong class="stripe-amount"><?= $block->escapeHtml($block->getFormattedAmount()); ?></strong>
+        <div style="font-size: smaller">
+        <?= $block->escapeHtml($block->getFrequencyLabel()) ?>
+        </div>
+    </td>
+</tr>
+<?php endif; ?>

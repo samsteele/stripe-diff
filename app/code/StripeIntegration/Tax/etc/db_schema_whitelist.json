@@ -1,0 +1,130 @@
+{
+    "tax_class": {
+        "column": {
+            "stripe_product_tax_code_name": true,
+            "stripe_product_tax_code": true
+        },
+        "index": {
+            "TAX_CLASS_STRIPE_PRODUCT_TAX_CODE": true
+        }
+    },
+    "quote_address": {
+        "column": {
+            "stripe_tax_calculation_id": true
+        }
+    },
+    "sales_order": {
+        "column": {
+            "stripe_tax_calculation_id": true,
+            "stripe_tax_transactions_reversal_mode": true
+        }
+    },
+    "sales_invoice": {
+        "column": {
+            "stripe_tax_calculation_id": true,
+            "stripe_tax_transaction_id": true
+        }
+    },
+    "sales_creditmemo": {
+        "column": {
+            "stripe_tax_transaction_id": true
+        }
+    },
+    "stripe_tax_transactions": {
+        "column": {
+            "entity_id": true,
+            "stripe_transaction_id": true,
+            "order_increment_id": true,
+            "invoice_increment_id": true,
+            "reference": true,
+            "stripe_created_at": true,
+            "reversal_status": true
+        },
+        "index": {
+            "STRIPE_TAX_TRANSACTIONS_STRIPE_TRANSACTION_ID": true,
+            "STRIPE_TAX_TRANSACTIONS_ORDER_INCREMENT_ID": true,
+            "STRIPE_TAX_TRANSACTIONS_INVOICE_INCREMENT_ID": true
+        },
+        "constraint": {
+            "PRIMARY": true
+        }
+    },
+    "stripe_tax_transaction_line_items": {
+        "column": {
+            "entity_id": true,
+            "transaction_id": true,
+            "stripe_id": true,
+            "amount": true,
+            "amount_tax": true,
+            "amount_remaining": true,
+            "amount_tax_remaining": true,
+            "qty": true,
+            "reference": true,
+            "tax_behavior": true,
+            "tax_code": true,
+            "type": true,
+            "stripe_transaction_id": true,
+            "qty_remaining": true
+        },
+        "index": {
+            "STRIPE_TAX_TRANSACTION_LINE_ITEMS_TRANSACTION_ID": true,
+            "STRIPE_TAX_TRANSACTION_LINE_ITEMS_STRIPE_ID": true,
+            "STRIPE_TAX_TRANSACTION_LINE_ITEMS_REFERENCE": true,
+            "STRIPE_TAX_TRANSACTION_LINE_ITEMS_STRIPE_TRANSACTION_ID": true
+        },
+        "constraint": {
+            "PRIMARY": true,
+            "FK_A326F37961ECB530F045437807746F4F": true
+        }
+    },
+    "stripe_tax_reversals": {
+        "column": {
+            "entity_id": true,
+            "stripe_transaction_id": true,
+            "original_transaction_id": true,
+            "order_increment_id": true,
+            "invoice_increment_id": true,
+            "creditmemo_increment_id": true,
+            "reference": true,
+            "stripe_created_at": true,
+            "reversal_status": true
+        },
+        "index": {
+            "STRIPE_TAX_REVERSALS_STRIPE_TRANSACTION_ID": true,
+            "STRIPE_TAX_REVERSALS_ORIGINAL_TRANSACTION_ID": true,
+            "STRIPE_TAX_REVERSALS_ORDER_INCREMENT_ID": true,
+            "STRIPE_TAX_REVERSALS_INVOICE_INCREMENT_ID": true,
+            "STRIPE_TAX_REVERSALS_CREDITMEMO_INCREMENT_ID": true
+        },
+        "constraint": {
+            "PRIMARY": true
+        }
+    },
+    "stripe_tax_reversal_line_items": {
+        "column": {
+            "entity_id": true,
+            "transaction_id": true,
+            "stripe_id": true,
+            "original_stripe_id": true,
+            "amount": true,
+            "amount_tax": true,
+            "qty": true,
+            "reference": true,
+            "tax_behavior": true,
+            "tax_code": true,
+            "type": true,
+            "stripe_original_transaction_id": true
+        },
+        "index": {
+            "STRIPE_TAX_REVERSAL_LINE_ITEMS_TRANSACTION_ID": true,
+            "STRIPE_TAX_REVERSAL_LINE_ITEMS_STRIPE_ID": true,
+            "STRIPE_TAX_REVERSAL_LINE_ITEMS_ORIGINAL_STRIPE_ID": true,
+            "STRIPE_TAX_REVERSAL_LINE_ITEMS_REFERENCE": true,
+            "STRIPE_TAX_REVERSAL_LINE_ITEMS_STRIPE_ORIGINAL_TRANSACTION_ID": true
+        },
+        "constraint": {
+            "PRIMARY": true,
+            "FK_FBAF958D29AC16C28E8C2C93E3471B39": true
+        }
+    }
+}

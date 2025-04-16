@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entities xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:noNamespaceSchemaLocation="urn:magento:mftf:DataGenerator/etc/dataProfileSchema.xsd">
+    <entity name="Germany_Address" type="address">
+        <data key="firstname">John</data>
+        <data key="lastname">Doe</data>
+        <data key="company">Magento</data>
+        <array key="street">
+            <item>Schillerstrasse 62</item>
+        </array>
+        <data key="city">Berlin</data>
+        <data key="country_id">DE</data>
+        <data key="country">Germany</data>
+        <data key="state">Berlin</data>
+        <data key="postcode">37351</data>
+        <data key="telephone">036075 71 65</data>
+        <data key="default_billing">Yes</data>
+        <data key="default_shipping">Yes</data>
+        <requiredEntity type="region">RegionBER</requiredEntity>
+    </entity>
+</entities>

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tests xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:noNamespaceSchemaLocation="urn:magento:mftf:Test/etc/testSchema.xsd">
+    <test name="TaxInclusiveQuoteSummaryTest" extends="CheckQuoteValuesTest">
+        <annotations>
+            <features value="Tax"/>
+            <stories value="Checkout"/>
+            <title value="General customer normal quote creation with tax inclusive behaviour"/>
+            <description value="Customer adds a simple product to the basket and checks the tax values on the checkout payment page with tax inclusive behaviour."/>
+            <severity value="CRITICAL"/>
+            <group value="stripe-tax"/>
+            <group value="tax-inclusive"/>
+        </annotations>
+
+        <before>
+            <actionGroup ref="ConfigureModuleActionGroup" stepKey="configureModule">
+                <argument name="pricesBehaviour" value="{{TaxSettings.inclusiveBehaviour}}"/>
+                <argument name="shippingBehaviour" value="{{TaxSettings.inclusiveBehaviour}}"/>
+            </actionGroup>
+        </before>
+
+        <!-- Check Order Summary -->
+        <actionGroup ref="CheckOrderSummaryActionGroup" stepKey="checkoutOrderSummary">
+            <argument name="subtotalExclTax" value="OrderSummary.subtotalExclTax_TaxInclusive"/>
+            <argument name="subtotalInclTax" value="OrderSummary.subtotalInclTax_TaxInclusive"/>
+            <argument name="shippingExclTax" value="OrderSummary.shippingExclTax_TaxInclusive"/>
+            <argument name="shippingInclTax" value="OrderSummary.shippingInclTax_TaxInclusive"/>
+            <argument name="totalTax" value="OrderSummary.totalTax_TaxInclusive"/>
+            <argument name="totalInclTax" value="OrderSummary.orderTotalInclTax_TaxInclusive"/>
+            <argument name="totalExclTax" value="OrderSummary.orderTotalExclTax_TaxInclusive"/>
+        </actionGroup>
+
+    </test>
+</tests>

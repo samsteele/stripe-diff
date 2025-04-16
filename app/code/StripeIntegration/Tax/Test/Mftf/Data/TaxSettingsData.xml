@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<entities xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:noNamespaceSchemaLocation="urn:magento:mftf:DataGenerator/etc/dataProfileSchema.xsd">
+    <entity name="GeneralSettings">
+        <data key="yes">1</data>
+        <data key="no">0</data>
+    </entity>
+    <entity name="TaxSettings">
+        <data key="inclusiveBehaviour">inclusive</data>
+        <data key="exclusiveBehaviour">exclusive</data>
+        <data key="freeBehaviour">free</data>
+        <data key="displayExclusive">1</data>
+        <data key="displayInclusive">2</data>
+        <data key="displayInclusiveAndExclusive">3</data>
+    </entity>
+</entities>

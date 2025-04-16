@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tests xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:noNamespaceSchemaLocation="urn:magento:mftf:Test/etc/testSchema.xsd">
+    <test name="CheckQuoteValuesTest">
+        <annotations>
+            <features value="Tax"/>
+            <stories value="Checkout"/>
+            <title value="General customer normal quote creation"/>
+            <description value="Customer adds a simple product to the basket and checks the tax values on the checkout payment page."/>
+            <severity value="CRITICAL"/>
+        </annotations>
+
+        <before>
+            <actionGroup ref="ConfigureModuleActionGroup" stepKey="configureModule"/>
+            <createData entity="ProductsCategory" stepKey="createCategory"/>
+            <createData entity="StripeSimpleProduct" stepKey="createProduct">
+                <requiredEntity createDataKey="createCategory"/>
+            </createData>
+        </before>
+
+        <!-- Add product to the cart -->
+        <actionGroup ref="NormalCartActionGroup" stepKey="createCart" />
+
+        <!-- Go to checkout -->
+        <actionGroup ref="GoToCheckoutFromMinicartActionGroup" stepKey="goToCheckoutFromMinicart"/>
+
+        <!-- Fill Shipment form -->
+        <actionGroup ref="FillGuestCustomerShippingDetailsActionGroup" stepKey="checkoutFillingShippingSection"/>
+
+        <!-- Check Order Summary -->
+        <actionGroup ref="CheckOrderSummaryActionGroup" stepKey="checkoutOrderSummary"/>
+
+        <after>
+            <deleteData createDataKey="createProduct" stepKey="deleteProduct"/>
+            <deleteData createDataKey="createCategory" stepKey="deleteCategory"/>
+        </after>
+
+    </test>
+</tests>

@@ -1,0 +1,152 @@
+<?xml version="1.0"?>
+<schema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Setup/Declaration/Schema/etc/schema.xsd">
+    <table name="tax_class" resource="default" engine="innodb" comment="Tax Class">
+        <column xsi:type="varchar" name="stripe_product_tax_code_name" nullable="true" length="255" comment="Stripe Product Tax Code Name"/>
+        <column xsi:type="varchar" name="stripe_product_tax_code" nullable="true" length="15" comment="Stripe Product Tax Code"/>
+
+        <index referenceId="TAX_CLASS_STRIPE_PRODUCT_TAX_CODE" indexType="btree">
+            <column name="stripe_product_tax_code"/>
+        </index>
+    </table>
+
+    <table name="quote_address" resource="default" engine="innodb">
+        <column xsi:type="varchar" name="stripe_tax_calculation_id" nullable="true" length="255" comment="Stripe Tax Calculation ID"/>
+    </table>
+
+    <table name="sales_order" resource="sales" engine="innodb">
+        <column xsi:type="varchar" name="stripe_tax_calculation_id" nullable="true" length="255" comment="Stripe Tax Calculation ID"/>
+        <column xsi:type="text" name="stripe_tax_transactions_reversal_mode" nullable="true" comment="Stripe Tax Transaction Reversal Mode"/>
+    </table>
+
+    <table name="sales_invoice" resource="sales" engine="innodb">
+        <column xsi:type="varchar" name="stripe_tax_calculation_id" nullable="true" length="255" comment="Stripe Tax Calculation ID"/>
+        <column xsi:type="varchar" name="stripe_tax_transaction_id" nullable="true" length="255" comment="Stripe Tax Transaction ID"/>
+    </table>
+
+    <table name="sales_creditmemo" resource="sales" engine="innodb">
+        <column xsi:type="varchar" name="stripe_tax_transaction_id" nullable="true" length="500" comment="Stripe Tax Transaction ID"/>
+    </table>
+
+    <table name="stripe_tax_transactions" resource="default" engine="innodb" comment="Stripe Tax Transactions">
+        <column name="entity_id" xsi:type="int" identity="true" unsigned="true" nullable="false" comment="Entity ID" />
+        <column name="stripe_transaction_id" xsi:type="varchar" length="255" nullable="true" comment="Transaction ID saved in Stripe" />
+        <column name="order_increment_id" xsi:type="varchar" length="255" nullable="true" comment="Order Increment ID" />
+        <column name="invoice_increment_id" xsi:type="varchar" length="255" nullable="true" comment="Invoice Increment ID" />
+        <column name="reference" xsi:type="varchar" length="255" nullable="true" comment="Reference for the transaction" />
+        <column name="stripe_created_at" xsi:type="timestamp" nullable="true" on_update="false" comment="Date of creation in Stripe system"/>
+        <column name="reversal_status" xsi:type="varchar" length="255" nullable="true" comment="Reversal Status" />
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="entity_id"/>
+        </constraint>
+        <index referenceId="STRIPE_TAX_TRANSACTIONS_STRIPE_TRANSACTION_ID" indexType="btree">
+            <column name="stripe_transaction_id"/>
+        </index>
+        <index referenceId="STRIPE_TAX_TRANSACTIONS_ORDER_INCREMENT_ID" indexType="btree">
+            <column name="order_increment_id"/>
+        </index>
+        <index referenceId="STRIPE_TAX_TRANSACTIONS_INVOICE_INCREMENT_ID" indexType="btree">
+            <column name="invoice_increment_id"/>
+        </index>
+    </table>
+    <table name="stripe_tax_transaction_line_items" resource="default" engine="innodb" comment="Stripe Tax Transaction Line Items">
+        <column name="entity_id" xsi:type="int" identity="true" unsigned="true" nullable="false" comment="Entity ID" />
+        <column name="transaction_id" xsi:type="int" unsigned="true" nullable="false" comment="Transaction ID" />
+        <column name="stripe_transaction_id" xsi:type="varchar" length="255" nullable="true" comment="Transaction id from Stripe" />
+        <column name="stripe_id" xsi:type="varchar" length="255" nullable="true" comment="Line item ID saved in Stripe" />
+        <column name="amount" xsi:type="decimal" scale="4" precision="10" unsigned="true" nullable="true" comment="Amount in the line item" />
+        <column name="amount_tax" xsi:type="decimal" scale="4" precision="10" unsigned="true" nullable="true" comment="Tax Amount in the line item" />
+        <column name="amount_remaining" xsi:type="decimal" scale="4" precision="10" unsigned="true" nullable="true" comment="Amount remaining in the line item after reversal" />
+        <column name="amount_tax_remaining" xsi:type="decimal" scale="4" precision="10" unsigned="true" nullable="true" comment="Tax Amount remaining in the line item after reversal" />
+        <column name="qty" xsi:type="int" nullable="true" identity="false" comment="Quantity of item in transaction" />
+        <column name="qty_remaining" xsi:type="int" nullable="true" identity="false" comment="Quantity remaining of item in transaction" />
+        <column name="reference" xsi:type="varchar" length="255" nullable="true" comment="Reference for line item" />
+        <column name="tax_behavior" xsi:type="varchar" length="255" nullable="true" comment="Tax behavior" />
+        <column name="tax_code" xsi:type="varchar" length="255" nullable="true" comment="Tax code" />
+        <column name="type" xsi:type="varchar" length="255" nullable="true" comment="Type" />
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="entity_id"/>
+        </constraint>
+        <constraint xsi:type="foreign" referenceId="STRIPE_TAX_TRANSACTION_LINE_ITEMS_TRANSACTION_ID_STRIPE_TAX_TRANSACTIONS_ENTITY_ID"
+                    table="stripe_tax_transaction_line_items" column="transaction_id"
+                    referenceTable="stripe_tax_transactions" referenceColumn="entity_id"
+                    onDelete="CASCADE"/>
+        <index referenceId="STRIPE_TAX_TRANSACTION_LINE_ITEM_TRANSACTION_ID" indexType="btree">
+            <column name="transaction_id"/>
+        </index>
+        <index referenceId="STRIPE_TAX_TRANSACTION_LINE_ITEM_STRIPE_TRANSACTION_ID" indexType="btree">
+            <column name="stripe_transaction_id"/>
+        </index>
+        <index referenceId="STRIPE_TAX_TRANSACTION_LINE_ITEM_STRIPE_ID" indexType="btree">
+            <column name="stripe_id"/>
+        </index>
+        <index referenceId="STRIPE_TAX_TRANSACTION_LINE_ITEM_REFERENCE" indexType="btree">
+            <column name="reference"/>
+        </index>
+    </table>
+
+    <table name="stripe_tax_reversals" resource="default" engine="innodb" comment="Stripe Tax Reversals">
+        <column name="entity_id" xsi:type="int" identity="true" unsigned="true" nullable="false" comment="Entity ID" />
+        <column name="stripe_transaction_id" xsi:type="varchar" length="255" nullable="true" comment="Transaction ID saved in Stripe" />
+        <column name="original_transaction_id" xsi:type="varchar" length="255" nullable="true" comment="Transaction ID of the reversed transaction" />
+        <column name="order_increment_id" xsi:type="varchar" length="255" nullable="true" comment="Order Increment ID" />
+        <column name="invoice_increment_id" xsi:type="varchar" length="255" nullable="true" comment="Invoice Increment ID" />
+        <column name="creditmemo_increment_id" xsi:type="varchar" length="255" nullable="true" comment="Credit Memo Increment ID" />
+        <column name="reference" xsi:type="varchar" length="255" nullable="true" comment="Reference for the reversal" />
+        <column name="stripe_created_at" xsi:type="timestamp" nullable="true" on_update="false" comment="Date of creation in Stripe system"/>
+        <column name="reversal_status" xsi:type="varchar" length="255" nullable="true" comment="Reversal Status" />
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="entity_id"/>
+        </constraint>
+        <index referenceId="STRIPE_TAX_REVERSALS_STRIPE_TRANSACTION_ID" indexType="btree">
+            <column name="stripe_transaction_id"/>
+        </index>
+        <index referenceId="STRIPE_TAX_REVERSALS_STRIPE_ORIGINAL_TRANSACTION_ID" indexType="btree">
+            <column name="original_transaction_id"/>
+        </index>
+        <index referenceId="STRIPE_TAX_REVERSALS_ORDER_INCREMENT_ID" indexType="btree">
+            <column name="order_increment_id"/>
+        </index>
+        <index referenceId="STRIPE_TAX_REVERSALS_INVOICE_INCREMENT_ID" indexType="btree">
+            <column name="invoice_increment_id"/>
+        </index>
+        <index referenceId="STRIPE_TAX_REVERSALS_CREDITMEMO_INCREMENT_ID" indexType="btree">
+            <column name="creditmemo_increment_id"/>
+        </index>
+    </table>
+    <table name="stripe_tax_reversal_line_items" resource="default" engine="innodb" comment="Stripe Tax Reversal Line Items">
+        <column name="entity_id" xsi:type="int" identity="true" unsigned="true" nullable="false" comment="Entity ID" />
+        <column name="transaction_id" xsi:type="int" unsigned="true" nullable="false" comment="Reversal ID" />
+        <column name="stripe_original_transaction_id" xsi:type="varchar" length="255" nullable="true" comment="Original transaction id from Stripe" />
+        <column name="stripe_id" xsi:type="varchar" length="255" nullable="true" comment="Line item ID saved in Stripe" />
+        <column name="original_stripe_id" xsi:type="varchar" length="255" nullable="true" comment="Line item ID of the reversed item" />
+        <column name="amount" xsi:type="decimal" scale="4" precision="10" unsigned="false" nullable="true" comment="Amount in the line item" />
+        <column name="amount_tax" xsi:type="decimal" scale="4" precision="10" unsigned="false" nullable="true" comment="Tax Amount in the line item" />
+        <column name="qty" xsi:type="int" nullable="true" identity="false" comment="Quantity of item in reversal" />
+        <column name="reference" xsi:type="varchar" length="255" nullable="true" comment="Reference for line item" />
+        <column name="tax_behavior" xsi:type="varchar" length="255" nullable="true" comment="Tax behavior" />
+        <column name="tax_code" xsi:type="varchar" length="255" nullable="true" comment="Tax code" />
+        <column name="type" xsi:type="varchar" length="255" nullable="true" comment="Type" />
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="entity_id"/>
+        </constraint>
+        <constraint xsi:type="foreign" referenceId="STRIPE_TAX_REVERSAL_LINE_ITEMS_TRANSACTION_ID_STRIPE_TAX_REVERSALS_ENTITY_ID"
+                    table="stripe_tax_reversal_line_items" column="transaction_id"
+                    referenceTable="stripe_tax_reversals" referenceColumn="entity_id"
+                    onDelete="CASCADE"/>
+        <index referenceId="STRIPE_TAX_REVERSAL_LINE_ITEM_TRANSACTION_ID" indexType="btree">
+            <column name="transaction_id"/>
+        </index>
+        <index referenceId="STRIPE_TAX_REVERSAL_LINE_ITEM_STRIPE_ORIGINAL_TRANSACTION_ID" indexType="btree">
+            <column name="stripe_original_transaction_id"/>
+        </index>
+        <index referenceId="STRIPE_TAX_REVERSAL_LINE_ITEM_STRIPE_ID" indexType="btree">
+            <column name="stripe_id"/>
+        </index>
+        <index referenceId="STRIPE_TAX_REVERSAL_LINE_ITEM_ORIGINAL_STRIPE_ID" indexType="btree">
+            <column name="original_stripe_id"/>
+        </index>
+        <index referenceId="STRIPE_TAX_REVERSAL_LINE_ITEM_REFERENCE" indexType="btree">
+            <column name="reference"/>
+        </index>
+    </table>
+</schema>

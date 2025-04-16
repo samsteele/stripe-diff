@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Event/etc/events.xsd">
+    <event name="sales_order_invoice_save_before">
+        <observer name="stripe_add_transaction_to_invoice" instance="StripeIntegration\Tax\Observer\AddTransactionIdToInvoice"/>
+    </event>
+
+    <event name="sales_order_creditmemo_save_before">
+        <observer name="stripe_create_transaction_reversal" instance="StripeIntegration\Tax\Observer\CreateTransactionReversal"/>
+    </event>
+
+    <event name="sales_model_service_quote_submit_before">
+        <observer name="stripe_can_order_proceed" instance="StripeIntegration\Tax\Observer\OrderProceed"/>
+    </event>
+
+    <event name="admin_system_config_changed_section_tax">
+        <observer name="admin_system_config_changed_section_tax_observer" instance="StripeIntegration\Tax\Observer\TaxExemptionsSaveObserver"/>
+    </event>
+</config>

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tests xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:noNamespaceSchemaLocation="urn:magento:mftf:Test/etc/testSchema.xsd">
+    <test name="AdminConfigurationsCheckTest">
+        <annotations>
+            <features value="Tax"/>
+            <stories value="Checkout"/>
+            <title value="Admin config check"/>
+            <description value="Admin user goes into the admin and checks the tax settings."/>
+            <severity value="CRITICAL"/>
+            <group value="stripe-tax"/>
+        </annotations>
+
+        <before>
+            <actionGroup ref="ConfigureModuleActionGroup" stepKey="configureModule"/>
+            <createData entity="ProductsCategory" stepKey="createCategory"/>
+            <createData entity="StripeSimpleProduct" stepKey="createProduct">
+                <requiredEntity createDataKey="createCategory"/>
+            </createData>
+            <actionGroup ref="AdminLoginActionGroup" stepKey="loginAsAdmin"/>
+        </before>
+
+        <actionGroup ref="TaxSettingsActionGroup" stepKey="checkAdminSettings"/>
+
+        <!-- Add product to the cart -->
+        <actionGroup ref="NormalCartActionGroup" stepKey="createCart" />
+
+        <!-- Go to checkout -->
+        <actionGroup ref="GoToCheckoutFromMinicartActionGroup" stepKey="goToCheckoutFromMinicart"/>
+
+        <!-- Fill Shipment form -->
+        <actionGroup ref="FillGuestCustomerShippingDetailsActionGroup" stepKey="checkoutFillingShippingSection"/>
+
+        <actionGroup ref="CheckOrderSummaryActionGroup" stepKey="checkoutOrderSummary">
+            <argument name="subtotalExclTax" value="OrderSummary.subtotalExclTax_TaxInclusive"/>
+            <argument name="subtotalInclTax" value="OrderSummary.subtotalInclTax_TaxInclusive"/>
+            <argument name="shippingExclTax" value="OrderSummary.shippingExclTax_TaxInclusive"/>
+            <argument name="shippingInclTax" value="OrderSummary.shippingInclTax_TaxInclusive"/>
+            <argument name="totalTax" value="OrderSummary.totalTax_TaxInclusive"/>
+            <argument name="totalInclTax" value="OrderSummary.orderTotalInclTax_TaxInclusive"/>
+            <argument name="totalExclTax" value="OrderSummary.orderTotalExclTax_TaxInclusive"/>
+        </actionGroup>
+
+        <after>
+            <deleteData createDataKey="createProduct" stepKey="deleteProduct"/>
+            <deleteData createDataKey="createCategory" stepKey="deleteCategory"/>
+            <actionGroup ref="AdminLogoutActionGroup" stepKey="adminLogout"/>
+        </after>
+
+    </test>
+</tests>

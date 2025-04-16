@@ -1,0 +1,23 @@
+<table style="width: 100%">
+  <tbody>
+
+    <?php if ($block->getInvoiceURL()): ?>
+    <tr>
+        <td><?= __('Pay invoice'); //phpcs:ignore ?></td>
+        <td>
+            <a href="<?= $block->getInvoiceURL(); //phpcs:ignore ?>" target="_blank" rel="noopener noreferrer"><?= __("Click to pay"); //phpcs:ignore  ?></a>
+        </td>
+    </tr>
+    <?php endif; ?>
+
+    <?php if ($block->getInvoicePDF()): ?>
+    <tr>
+        <td><?= __('Download invoice'); //phpcs:ignore ?></td>
+        <td>
+            <a href="<?= $block->getInvoicePDF(); //phpcs:ignore ?>" target="_blank" rel="noopener noreferrer"><?= __("Download PDF"); //phpcs:ignore  ?></a>
+        </td>
+    </tr>
+    <?php endif; ?>
+
+    </tbody>
+</table>

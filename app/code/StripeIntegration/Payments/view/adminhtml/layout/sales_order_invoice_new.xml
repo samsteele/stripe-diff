@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <head>
+        <css src="StripeIntegration_Payments::css/admin.css" />
+    </head>
+    <body>
+        <referenceContainer name="submit_before">
+            <block class="StripeIntegration\Payments\Block\Adminhtml\Invoice\CustomCaptureAmount" name="custom_capture_amount" template="StripeIntegration_Payments::invoice/custom_capture_amount.phtml" before="-"/>
+        </referenceContainer>
+    </body>
+</page>

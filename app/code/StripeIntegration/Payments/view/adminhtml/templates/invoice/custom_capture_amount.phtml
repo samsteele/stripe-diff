@@ -1,0 +1,21 @@
+<?php
+
+/** @var \Magento\Backend\Block\Template $block */
+/** @var \Magento\Framework\Escaper $escaper */
+?>
+
+<?php if ($block->shouldDisplay()): ?>
+<div class="admin__field field-custom-capture-amount" style="margin-top: 2rem; border: 1px solid #ccc; padding: 2rem">
+    <div class="admin__page-section-item-title" >
+        <span class="title"><?= $escaper->escapeHtml(__('Custom Capture Amount')) ?></span>
+    </div>
+    <div class="admin__field-control" style="width: 15rem">
+        <div class="admin__control-addon">
+            <input class="admin__control-text" type="text" name="invoice[custom_capture_amount]" maxlength="10">
+            <label class="admin__addon-prefix" data-bind="attr: {for: uid}">
+                <span data-bind="text: addbefore"><?= $escaper->escapeHtml($block->getCurrencySymbol()) ?></span>
+            </label>
+        </div>
+    </div>
+</div>
+<?php endif; ?>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<actionGroups xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:mftf:Test/etc/actionGroupSchema.xsd">
+    <actionGroup name="VerifyCreatedOrderResponseMessageActionGroup">
+        <annotations>
+            <description>Validates that the Error Message is present and correct.</description>
+        </annotations>
+
+        <see selector="{{AdminStripeCheckoutMessageSection.errorMessage}}" userInput="Your card was declined. This transaction requires authentication." stepKey="seeErrorMessage"/>
+    </actionGroup>
+</actionGroups>

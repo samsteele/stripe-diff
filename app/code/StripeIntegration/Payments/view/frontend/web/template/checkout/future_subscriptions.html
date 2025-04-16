@@ -1,0 +1,14 @@
+<!-- ko if: canDisplay -->
+
+<tr class="totals future_subscriptions excl">
+    <th class="mark" colspan="1" scope="row">
+        <strong data-bind="text: getTitle()"></strong><br>
+        <div class="stripe-period" data-bind="text: getStartDateLabel()"></div>
+    </th>
+    <td class="amount">
+        <strong class="price" data-bind="text: getFormattedAmount()"></strong>
+        <div data-bind="text: getFrequencyLabel()"></div>
+    </td>
+</tr>
+
+<!-- /ko -->

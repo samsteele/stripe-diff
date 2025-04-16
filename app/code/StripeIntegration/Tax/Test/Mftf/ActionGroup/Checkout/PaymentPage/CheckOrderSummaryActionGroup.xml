@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<actionGroups xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:noNamespaceSchemaLocation="urn:magento:mftf:Test/etc/actionGroupSchema.xsd">
+    <actionGroup name="CheckOrderSummaryActionGroup">
+        <annotations>
+            <description>Checks the order summary for the values with and without tax.</description>
+        </annotations>
+        <arguments>
+            <argument name="subtotalExclTax" defaultValue="OrderSummary.subtotalExclTax_TaxExclusive"/>
+            <argument name="subtotalInclTax" defaultValue="OrderSummary.subtotalInclTax_TaxExclusive"/>
+            <argument name="shippingExclTax" defaultValue="OrderSummary.shippingExclTax_TaxExclusive"/>
+            <argument name="shippingInclTax" defaultValue="OrderSummary.shippingInclTax_TaxExclusive"/>
+            <argument name="totalTax" defaultValue="OrderSummary.totalTax_TaxExclusive"/>
+            <argument name="totalInclTax" defaultValue="OrderSummary.orderTotalInclTax_TaxExclusive"/>
+            <argument name="totalExclTax" defaultValue="OrderSummary.orderTotalExclTax_TaxExclusive"/>
+        </arguments>
+
+        <!-- Wait for payment page -->
+        <waitForPageLoad stepKey="waitForPaymentPageToLoad"/>
+        <!-- Wait cart totals block to be visible -->
+        <waitForElementVisible selector="{{TaxCheckoutCartSummarySection.cartTotalsBlock}}" stepKey="waitForCartTotalsVisible"/>
+
+        <see selector="{{TaxCheckoutCartSummarySection.subtotalExcludingTax}}" userInput="{{subtotalExclTax}}" stepKey="checkSubtotalExcludingTax"/>
+        <see selector="{{TaxCheckoutCartSummarySection.subtotalIncludingTax}}" userInput="{{subtotalInclTax}}" stepKey="checkSubtotalIncludingTax"/>
+        <see selector="{{TaxCheckoutCartSummarySection.shippingExcludingTax}}" userInput="{{shippingExclTax}}" stepKey="checkShippingExcludingTax"/>
+        <see selector="{{TaxCheckoutCartSummarySection.shippingIncludingTax}}" userInput="{{shippingInclTax}}" stepKey="checkShippingIncludingTax"/>
+        <see selector="{{StorefrontCustomerOrderViewSection.totalsTax}}" userInput="{{totalTax}}" stepKey="checkTotalTax"/>
+        <see selector="{{TaxCheckoutCartSummarySection.totalIncludingTax}}" userInput="{{totalInclTax}}" stepKey="checkTotalIncludingTax"/>
+        <see selector="{{TaxCheckoutCartSummarySection.totalExcludingTax}}" userInput="{{totalExclTax}}" stepKey="checkTotalExcludingTax"/>
+
+    </actionGroup>
+</actionGroups>

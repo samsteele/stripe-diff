@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entities xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:noNamespaceSchemaLocation="urn:magento:mftf:DataGenerator/etc/dataProfileSchema.xsd">
+    <entity name="StripeSimpleProduct" extends="SimpleProduct">
+        <data key="name">Simple Product</data>
+        <data key="sku">simple-product</data>
+        <data key="urlKey">simple-product</data>
+        <data key="price">100</data>
+    </entity>
+    <entity name="StripeBundleProduct" extends="SimpleProduct">
+        <data key="name" unique="suffix">Simple Product </data>
+        <data key="sku" unique="suffix">SimpleProduct</data>
+        <data key="urlKey" unique="suffix">simple-product-</data>
+        <data key="type_id">simple</data>
+        <data key="attribute_set_id">4</data>
+        <data key="price">100</data>
+        <data key="visibility">4</data>
+        <data key="status">1</data>
+        <data key="quantity">1000</data>
+        <data key="weight">1</data>
+        <requiredEntity type="product_extension_attribute">EavStockItem</requiredEntity>
+    </entity>
+    <entity name="TaxConfigurableProduct" type="product">
+        <data key="name" unique="suffix">Tax Configurable Product</data>
+        <data key="sku" unique="suffix">tax-configurable-product</data>
+        <data key="urlKey" unique="suffix">tax-configurable-product</data>
+        <data key="type_id">configurable</data>
+        <data key="attribute_set_id">4</data>
+        <data key="visibility">4</data>
+        <data key="price">100.00</data>
+        <data key="weight">2</data>
+        <data key="status">1</data>
+        <data key="quantity">100</data>
+        <requiredEntity type="product_extension_attribute">EavStockItem</requiredEntity>
+        <requiredEntity type="custom_attribute_array">CustomAttributeCategoryIds</requiredEntity>
+    </entity>
+</entities>

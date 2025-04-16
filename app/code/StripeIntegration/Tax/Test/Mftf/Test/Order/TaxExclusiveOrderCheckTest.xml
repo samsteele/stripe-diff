@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tests xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:noNamespaceSchemaLocation="urn:magento:mftf:Test/etc/testSchema.xsd">
+    <test name="TaxExclusiveOrderCheckTest" extends="CheckOrderValuesTest">
+        <annotations>
+            <features value="Tax"/>
+            <stories value="Checkout"/>
+            <title value="General customer normal order creation with tax exclusive behaviour"/>
+            <description value="Customer adds a simple product to the basket and creates an order and checks the tax values for the order in admin area with tax exclusive behaviour."/>
+            <severity value="CRITICAL"/>
+            <group value="stripe-tax"/>
+            <group value="tax-exclusive"/>
+        </annotations>
+    </test>
+</tests>

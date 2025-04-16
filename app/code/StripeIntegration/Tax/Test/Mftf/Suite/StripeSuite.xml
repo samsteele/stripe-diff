@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<suites xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:mftf:Test/etc/suiteSchema.xsd">
+    <suite name="StripeSuite">
+        <include>
+            <test name="TaxExclusiveQuoteSummaryTest"/>
+            <test name="TaxInclusiveQuoteSummaryTest"/>
+            <test name="TaxExclusiveOrderCheckTest"/>
+            <test name="TaxInclusiveOrderCheckTest"/>
+            <test name="TaxExclusiveConfigurableProductOrderCheckTest"/>
+<!--            <test name="TaxExclusiveBundleProductOrderCheckTest"/>-->
+            <test name="AdminConfigurationsCheckTest"/>
+        </include>
+    </suite>
+</suites>

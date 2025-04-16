@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<actionGroups xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:noNamespaceSchemaLocation="urn:magento:mftf:Test/etc/actionGroupSchema.xsd">
+    <actionGroup name="CreateConfigurableProductWithWeightActionGroup" extends="CreateConfigurableProductActionGroup">
+        <waitForElementVisible selector="{{AdminProductFormSection.productName}}" stepKey="waitForNameFieldVisible" before="fillName" time="30"/>
+
+        <fillField userInput="{{product.weight}}" selector="{{AdminProductFormSection.productWeight}}" stepKey="fillWeight" after="fillPrice"/>
+
+        <fillField selector="{{AdminCreateProductConfigurationsPanel.attribute1}}" userInput="{{product.price}}" stepKey="fillAttributePrice1"/>
+        <fillField selector="{{AdminCreateProductConfigurationsPanel.attribute2}}" userInput="{{product.price}}" stepKey="fillAttributePrice2"/>
+        <fillField selector="{{AdminCreateProductConfigurationsPanel.attribute3}}" userInput="{{product.price}}" stepKey="fillAttributePrice3"/>
+
+        <waitForElementVisible selector="{{AdminCreateProductConfigurationsPanel.createNewAttribute}}" stepKey="waitForNewAttributeFieldVisible" before="clickOnNewAttribute" time="30"/>
+    </actionGroup>
+</actionGroups>

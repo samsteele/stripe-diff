@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<actionGroups xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:noNamespaceSchemaLocation="urn:magento:mftf:Test/etc/actionGroupSchema.xsd">
+    <actionGroup name="TaxSettingsActionGroup">
+        <amOnPage url="{{AdminStripeTaxConfigurationPage.url}}" stepKey="amOnTaxSettingsPage"/>
+        <waitForPageLoad stepKey="waitForPageToLoad1" time="30"/>
+        <waitForElementVisible selector="{{AdminStripeTaxConfigSection.stripeSettingsHead}}" stepKey="waitForElement" time="30"/>
+        <conditionalClick selector="{{AdminStripeTaxConfigSection.stripeSettingsHead}}" dependentSelector="{{AdminStripeTaxConfigSection.pricesAreSelect}}" visible="false" stepKey="openStripeTax"/>
+        <scrollTo selector="{{AdminStripeTaxConfigSection.activeRegistrations}}" stepKey="scrollToActiveRegistrations"/>
+        <dontSeeElement selector="{{AdminConfigureTaxSection.taxClasses}}" stepKey="dontTaxClasses"/>
+        <dontSeeElement selector="{{AdminConfigureTaxSection.taxCalculationSettings}}" stepKey="dontTaxCalculationSettings"/>
+        <dontSeeElement selector="{{AdminConfigureTaxSection.defaultDestination}}" stepKey="dontSeeDefaultDestination"/>
+        <dontSeeElement selector="{{AdminConfigureTaxSection.taxPriceDisplaySettings}}" stepKey="dontSeePriceDisplaySettings"/>
+
+        <scrollTo selector="{{AdminStripeTaxConfigSection.pricesAreSelect}}" stepKey="scrollToPricesAre"/>
+        <selectOption selector="{{AdminStripeTaxConfigSection.pricesAreSelect}}" userInput="{{TaxSettings.inclusiveBehaviour}}" stepKey="selectTaxInclusivePrices"/>
+        <selectOption selector="{{AdminStripeTaxConfigSection.shippingIsSelect}}" userInput="{{TaxSettings.inclusiveBehaviour}}" stepKey="selectTaxInclusiveShipping"/>
+        <click selector="#save" stepKey="save"/>
+    </actionGroup>
+</actionGroups>

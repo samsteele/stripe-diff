@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ /**
+  * Copyright © Magento, Inc. All rights reserved.
+  * See COPYING.txt for license details.
+  */
+-->
+<tests xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:noNamespaceSchemaLocation="urn:magento:mftf:Test/etc/testSchema.xsd">
+    <test name="TaxExclusiveBundleProductOrderCheckTest" extends="StorefrontBundlePlaceOrderWithMultipleOptionsSuccessTest">
+        <annotations>
+            <features value="Tax"/>
+            <stories value="Checkout"/>
+            <title value="General customer bundle product order creation with tax exclusive behaviour"/>
+            <description value="Customer adds a bundle product to the basket and creates an order and checks the tax values for the order in admin area with tax exclusive behaviour."/>
+            <severity value="CRITICAL"/>
+<!--            <group value="stripe-tax"/>-->
+            <group value="tax-exclusive"/>
+        </annotations>
+        <before>
+            <actionGroup ref="ConfigureModuleActionGroup" stepKey="configureModule" before="createPreReqCategory"/>
+
+            <createData entity="StripeBundleProduct" stepKey="firstSimpleProduct"/>
+            <createData entity="StripeBundleProduct" stepKey="secondSimpleProduct"/>
+
+            <remove keyForRemoval="createCustomer"/>
+        </before>
+        <after>
+            <remove keyForRemoval="deleteCustomer"/>
+        </after>
+
+        <actionGroup ref="AdminLogoutActionGroup" stepKey="adminLogout" after="saveWithThreeOptions"/>
+
+        <remove keyForRemoval="loginCustomer"/>
+
+        <!-- Go to checkout -->
+        <actionGroup ref="GoToCheckoutFromMinicartActionGroup" stepKey="goToCheckoutFromMinicart" after="enterProductQuantityAndAddToTheCart"/>
+
+        <!-- Fill Shipment form -->
+        <actionGroup ref="FillGuestCustomerShippingDetailsActionGroup" stepKey="checkoutFillingShippingSection" after="goToCheckoutFromMinicart"/>
+
+        <!-- Place Order -->
+        <actionGroup ref="PlaceSimpleOrderActionGroup" stepKey="placeOrder1" after="checkoutFillingShippingSection"/>
+
+        <grabTextFrom selector="{{CheckoutSuccessMainSection.orderNumber}}" stepKey="grabOrderNumber1" after="placeOrder1"/>
+
+        <actionGroup ref="AdminLoginActionGroup" stepKey="loginAsAdmin1" after="grabOrderNumber1"/>
+        <actionGroup ref="FilterOrderGridByIdActionGroup" stepKey="filterOrderById" after="loginAsAdmin1">
+            <argument name="orderId" value="$grabOrderNumber1"/>
+        </actionGroup>
+
+        <actionGroup ref="AdminOrderGridClickFirstRowActionGroup" stepKey="clickOrderRow" after="filterOrderById"/>
+
+        <actionGroup ref="CheckOrderDataAdminActionGroup" stepKey="checkOrderAdminData" after="clickOrderRow">
+            <argument name="subtotalExclTax" value="OrderSummary.subtotalExclTax_TaxExclusive_Bundle"/>
+            <argument name="subtotalInclTax" value="OrderSummary.subtotalInclTax_TaxExclusive_Bundle"/>
+            <argument name="shippingExclTax" value="OrderSummary.shippingExclTax_TaxExclusive_Bundle"/>
+            <argument name="shippingInclTax" value="OrderSummary.shippingInclTax_TaxExclusive_Bundle"/>
+            <argument name="totalTax" value="OrderSummary.totalTax_TaxExclusive_Bundle"/>
+            <argument name="totalInclTax" value="OrderSummary.orderTotalInclTax_TaxExclusive_Bundle"/>
+            <argument name="totalExclTax" value="OrderSummary.orderTotalExclTax_TaxExclusive_Bundle"/>
+        </actionGroup>
+
+        <remove keyForRemoval="openCheckoutPage"/>
+        <remove keyForRemoval="clickNext"/>
+        <remove keyForRemoval="placeOrder"/>
+        <remove keyForRemoval="clickOrderLink"/>
+        <remove keyForRemoval="grabOrderNumber"/>
+        <remove keyForRemoval="orderId"/>
+        <remove keyForRemoval="filterOrdersGridById"/>
+        <remove keyForRemoval="startInvoice"/>
+        <remove keyForRemoval="seeFirstProductInList"/>
+        <remove keyForRemoval="seeSecondProductInList"/>
+
+    </test>
+</tests>

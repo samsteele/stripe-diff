@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<sections xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:noNamespaceSchemaLocation="urn:magento:mftf:Page/etc/SectionObject.xsd">
+    <section name="AdminStripeTaxConfigSection">
+        <element name="stripeSettingsHead" type="text" selector="#tax_stripe_tax-head" />
+        <element name="activeRegistrations" type="text" selector="#row_tax_stripe_tax_active_tax_registrations" />
+        <element name="pricesAreSelect" type="text" selector="#tax_stripe_tax_prices_and_promotions_tax_behavior" />
+        <element name="shippingIsSelect" type="text" selector="#tax_stripe_tax_shipping_tax_behavior" />
+    </section>
+</sections>

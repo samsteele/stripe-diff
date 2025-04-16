@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<entities xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:noNamespaceSchemaLocation="urn:magento:mftf:DataGenerator/etc/dataProfileSchema.xsd">
+    <entity name="Cards">
+        <data key="successCard">4111111111111111</data>
+        <data key="expDate">1244</data>
+        <data key="cvc">333</data>
+    </entity>
+    <entity name="Currency">
+        <data key="allowedCurrencies">USD,EUR</data>
+    </entity>
+    <entity name="SavedPaymentMethod">
+        <data key="country">US</data>
+        <data key="zipCode">90210</data>
+    </entity>
+    <entity name="OrderSummary">
+        <data key="subtotalExclTax_TaxExclusive">100.00</data>
+        <data key="subtotalInclTax_TaxExclusive">119.00</data>
+        <data key="shippingExclTax_TaxExclusive">5.00</data>
+        <data key="shippingInclTax_TaxExclusive">5.95</data>
+        <data key="totalTax_TaxExclusive">19.95</data>
+        <data key="orderTotalInclTax_TaxExclusive">124.95</data>
+        <data key="orderTotalExclTax_TaxExclusive">105.00</data>
+
+        <data key="subtotalExclTax_TaxExclusive_Bundle">10,000.00</data>
+        <data key="subtotalInclTax_TaxExclusive_Bundle">11,900.00</data>
+        <data key="shippingExclTax_TaxExclusive_Bundle">5.00</data>
+        <data key="shippingInclTax_TaxExclusive_Bundle">5.95</data>
+        <data key="totalTax_TaxExclusive_Bundle">1,900.95</data>
+        <data key="orderTotalInclTax_TaxExclusive_Bundle">11,905.95</data>
+        <data key="orderTotalExclTax_TaxExclusive_Bundle">10,005.00</data>
+
+        <data key="subtotalExclTax_TaxInclusive">84.04</data>
+        <data key="subtotalInclTax_TaxInclusive">100.00</data>
+        <data key="shippingExclTax_TaxInclusive">4.20</data>
+        <data key="shippingInclTax_TaxInclusive">5.00</data>
+        <data key="totalTax_TaxInclusive">16.76</data>
+        <data key="orderTotalInclTax_TaxInclusive">105.00</data>
+        <data key="orderTotalExclTax_TaxInclusive">88.24</data>
+    </entity>
+</entities>

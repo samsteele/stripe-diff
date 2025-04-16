@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<actionGroups xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:noNamespaceSchemaLocation="urn:magento:mftf:Test/etc/actionGroupSchema.xsd">
+    <actionGroup name="ConfigureModuleActionGroup">
+        <annotations>
+            <description>Configure the Stripe module.</description>
+        </annotations>
+        <arguments>
+            <argument name="active" defaultValue="1" type="string"/>
+            <argument name="mode" defaultValue="test" type="string"/>
+            <argument name="pk" defaultValue="{{_CREDS.stripe/acc_de_pk}}" type="string"/>
+            <argument name="sk" defaultValue="{{_CREDS.stripe/acc_de_sk}}" type="string"/>
+            <argument name="pricesBehaviour" defaultValue="{{TaxSettings.exclusiveBehaviour}}" type="string"/>
+            <argument name="shippingBehaviour" defaultValue="{{TaxSettings.exclusiveBehaviour}}" type="string"/>
+            <argument name="cartPriceDisplay" defaultValue="{{TaxSettings.displayInclusiveAndExclusive}}" type="string"/>
+            <argument name="cartSubtotalDisplay" defaultValue="{{TaxSettings.displayInclusiveAndExclusive}}" type="string"/>
+            <argument name="cartShippingDisplay" defaultValue="{{TaxSettings.displayInclusiveAndExclusive}}" type="string"/>
+            <argument name="cartTotalWithoutTax" defaultValue="{{GeneralSettings.yes}}" type="string"/>
+            <argument name="cartFullTaxSummary" defaultValue="{{GeneralSettings.yes}}" type="string"/>
+            <argument name="orderPriceDisplay" defaultValue="{{TaxSettings.displayInclusiveAndExclusive}}" type="string"/>
+            <argument name="orderSubtotalDisplay" defaultValue="{{TaxSettings.displayInclusiveAndExclusive}}" type="string"/>
+            <argument name="orderShippingDisplay" defaultValue="{{TaxSettings.displayInclusiveAndExclusive}}" type="string"/>
+            <argument name="orderTotalWithoutTax" defaultValue="{{GeneralSettings.yes}}" type="string"/>
+            <argument name="orderFullTaxSummary" defaultValue="{{GeneralSettings.yes}}" type="string"/>
+            <argument name="baseCurrency" defaultValue="EUR" type="string"/>
+            <argument name="allowedCurrencies" defaultValue="{{Currency.allowedCurrencies}}" type="string"/>
+            <argument name="defaultCurrency" defaultValue="EUR" type="string"/>
+        </arguments>
+
+        <magentoCLI command="config:set tax/stripe_tax/enabled {{active}}" stepKey="activateStripeTax"/>
+        <magentoCLI command="config:set tax/stripe_tax/stripe_mode {{mode}}" stepKey="setStripeTaxMode"/>
+        <magentoCLI command="config:set tax/stripe_tax/stripe_test_pk {{pk}}" stepKey="setTaxPublishableKey"/>
+        <magentoCLI command="config:set tax/stripe_tax/stripe_test_sk {{sk}}" stepKey="setTaxSecretKey"/>
+        <magentoCLI command="config:set tax/stripe_tax/prices_and_promotions_tax_behavior {{pricesBehaviour}}" stepKey="setTaxPricesBehaviour"/>
+        <magentoCLI command="config:set tax/stripe_tax/shipping_tax_behavior {{shippingBehaviour}}" stepKey="setTaxShippingBehaviour"/>
+        <magentoCLI command="config:set tax/cart_display/price {{cartPriceDisplay}}" stepKey="setCartPriceDisplay"/>
+        <magentoCLI command="config:set tax/cart_display/subtotal {{cartSubtotalDisplay}}" stepKey="setCartSubtotalDisplay"/>
+        <magentoCLI command="config:set tax/cart_display/shipping {{cartShippingDisplay}}" stepKey="setCartShippingDisplay"/>
+        <magentoCLI command="config:set tax/cart_display/grandtotal {{cartTotalWithoutTax}}" stepKey="setCartTotalWithoutTaxDisplay"/>
+        <magentoCLI command="config:set tax/cart_display/full_summary {{cartFullTaxSummary}}" stepKey="setCartFullTaxSummaryDisplay"/>
+        <magentoCLI command="config:set tax/sales_display/price {{orderPriceDisplay}}" stepKey="setOrderPriceDisplay"/>
+        <magentoCLI command="config:set tax/sales_display/subtotal {{orderSubtotalDisplay}}" stepKey="setOrderSubtotalDisplay"/>
+        <magentoCLI command="config:set tax/sales_display/shipping {{orderShippingDisplay}}" stepKey="setOrderShippingDisplay"/>
+        <magentoCLI command="config:set tax/sales_display/grandtotal {{orderTotalWithoutTax}}" stepKey="setOrderTotalWithoutTaxDisplay"/>
+        <magentoCLI command="config:set tax/sales_display/full_summary {{orderFullTaxSummary}}" stepKey="setOrderFullTaxSummaryDisplay"/>
+        <magentoCLI command="config:set currency/options/base {{baseCurrency}}" stepKey="saveBaseCurrency"/>
+        <magentoCLI command="config:set currency/options/allow {{allowedCurrencies}}" stepKey="saveAllowedCurrency"/>
+        <magentoCLI command="config:set currency/options/default {{defaultCurrency}}" stepKey="saveDefaultCurrency"/>
+        <magentoCLI command="cache:clean config" stepKey="cleanConfigCache"/>
+
+    </actionGroup>
+</actionGroups>
